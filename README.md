@@ -36,31 +36,9 @@ done
 * dodac dwa nowe stany, przesun sie w prawo i strzel, przesun sie w lewo i strzel
 
 
-presentation outline
-* wstep jakiś
-* jak przełożyć gre na problem MLowy?
-** jak my postrzegamy gre, a jak postrzega ją algorytm MLowy?
-* jak w praktyce pobawić się z czymś takim?
-** wziąć pierwszą lepszą grę i zasadzić w niej czujki
-** można też wpinać się w inny sposób - przykłady z emulatorów, przykłady ze starcrafta, przykłady z dinozaurem i selenium
-* pierwsze podejście - baseline
-** random algorithm - jak wygląda, jak długo gra
-* drugie podejście - czy sztuczna inteligencja jest w stanie odtworzyć nasze zachowanie?
-** przykład z nagrywaniem po czasie
-** ale to jest hak ;-) nie dla każdej gry to się sprawdzi
-** zachowanie jest dość głupie, uznajmy to za nasz baseline
-* trzecie podejście - zbieramy dane
-** które elementy gry są istotne?
-** ile danych potrzeba?
-* ewolucja
-** wciąż musimy sami grać? - zróbmy generator, ruchów według koncepcji podobnej jak w algorytmach ewolucyjnych, słabszy przegrywa
-* reinforcement learning
-** w najgorszym razie tylko omowie koncepcje i nie pokaże przykładu
-
-
 TODOsy
-* wypchnąć do prywatnego repo na github
 * uporządkować kody
+* generowanie losowych ruchów jako model i jego ewaluacja
 * zrobić slajdy początkowe - jak postrzega świat algorytm MLowy?
 * slajdy do jak wpiąć się w gre?
 * slajdy do baseline 1
@@ -71,3 +49,6 @@ TODOsy
 * zdecydować czy zmergować ewolucje z RL?
 * slajdy do ewolucji
 * kodas do reinforcement learningu
+
+DONE
+* wypchnąć do prywatnego repo na github

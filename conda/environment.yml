@@ -1,0 +1,26 @@
+name: shmup
+channels:
+  - conda-forge
+  - anaconda
+dependencies:
+  - python=3.6
+  - pyarrow
+  - nb_conda
+  - conda-forge::cycler
+  - anaconda::seaborn
+  - anaconda::scikit-learn
+  - anaconda::pyemd
+  - joblib
+  - anaconda::plotly
+  - anaconda::bokeh
+  - conda-forge::httplib2
+  - anaconda::pydotplus
+  - jupyter
+  - keras
+  - ipython
+  - pip:
+    - pyspark_dist_explore
+    - tensorflow==1.6.0
+    - xgboost
+    - umap-learn
+    - pygame

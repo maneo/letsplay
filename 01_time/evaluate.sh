@@ -3,7 +3,7 @@
 
 function eval_experiment() {
 
-	logfile="${experiment_name}_eval.log"
+	logfile="eval_${experiment_name}.log"
 	echo "evaluation of ${experiment_name}"
 
 	rm $logfile
