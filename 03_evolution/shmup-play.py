@@ -7,14 +7,10 @@ from math import sqrt
 import pygame
 import random
 from os import path
-import pickle
 import time
-from xgboost import XGBClassifier
-import numpy as np
-from sklearn.ensemble import RandomForestClassifier
-
 
 img_dir = path.join(path.dirname(__file__), 'img')
+generation = 1
 
 WIDTH = 480
 HEIGHT = 600
@@ -37,7 +33,38 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Shmup!")
 clock = pygame.time.Clock()
 
-ai_model = pickle.load(open("ai_model.pkl", "rb"))
+
+class MovesSequence:
+    default_move = 2   # if doubt shoot!
+    path_to_evolution = "./evolution/"
+
+    def __init__(self, generation):
+        file_with_seq = MovesSequence.path_to_evolution + "gen_" + str(generation) + ".seq"
+        with open(file_with_seq, 'r') as seq_file:
+            self.moves = seq_file.readlines()
+        self.current_move = 0
+        self.generation = generation
+        self.done_moves = []
+
+    def next(self):
+        self.current_move = self.current_move + 1
+        if self.current_move < len(self.moves):
+            current_move = int(self.moves[self.current_move])
+            print(current_move)
+            self.done_moves.append(current_move)
+            return current_move
+        else:
+            current_move = MovesSequence.default_move
+            self.done_moves.append(current_move)
+            return current_move
+
+    def save_done_moves(self, score, time):
+        file_with_seq = MovesSequence.path_to_evolution + "dead_gen_" \
+                        + str(generation) + "_s_" + str(score) + "_t_" \
+                                                  + str(time) + ".seq"
+        with open(file_with_seq, 'w') as seq_file:
+            for move in self.done_moves:
+                seq_file.write(str(move) + "\n")
 
 
 class Player(pygame.sprite.Sprite):
@@ -117,26 +144,6 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 
-def get_game_state(mobs, player, bullets):
-    state = []
-
-    state.extend(player.dump_state_vector())
-
-    for mob in mobs.sprites():
-        state.extend(mob.dump_state_vector(player))
-
-    # pad with empty mobs to have vector of the same size
-    mob_length = len(mobs.sprites())
-    for j in range(MOBS_SIZE - mob_length):
-        state.extend([0, 0, 0, 0])
-    return state
-
-
-def ai(game_state):
-    return ai_model.predict(np.array(game_state).reshape(1, -1))
-    # return random.randint(0, 3)
-
-
 # Load all game graphics
 background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
 background_rect = background.get_rect()
@@ -157,13 +164,15 @@ for i in range(MOBS_SIZE):
 game_start_time = time.time()
 score = 0
 
+ai_model = MovesSequence(generation)
+
 # Game loop
 running = True
 while running:
     # keep loop running at the right speed
     clock.tick(FPS)
 
-    action = ai(get_game_state(mobs, player, bullets))
+    action = ai_model.next()
 
     # Process input (events)
     for event in pygame.event.get():
@@ -200,6 +209,8 @@ while running:
     pygame.display.flip()
 
 
-end = time. time()
+end = time.time()
+
 print("time: {} sec, score: {}".format(round(end - game_start_time), score))
+ai_model.save_done_moves(round(end - game_start_time), score)
 pygame.quit()

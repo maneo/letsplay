@@ -29,3 +29,8 @@ todo:
 - główną pętle uczenia z uruchamianiem gry (narazie jeden wątek)
 - w grze zrobić wczytywanie sekwnecji ruchów, przyjmowanie jej na wejściu
 - wybór najlepszych sekwnecji ruchu z każdego pokolenia do uczenia sieci
+
+
+
+# 0 - left, 1 - right, 2 - shoot, 3 - nothing,
+# 4 - left + shoot, 5 - right + shoot

@@ -1,4 +1,4 @@
-name: shmup
+name: letsplay
 channels:
   - conda-forge
   - anaconda
