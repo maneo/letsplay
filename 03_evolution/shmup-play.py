@@ -8,9 +8,11 @@ import pygame
 import random
 from os import path
 import time
+import sys
 
 img_dir = path.join(path.dirname(__file__), 'img')
 generation = 1
+generation = sys.argv[1]
 
 WIDTH = 480
 HEIGHT = 600
@@ -50,7 +52,6 @@ class MovesSequence:
         self.current_move = self.current_move + 1
         if self.current_move < len(self.moves):
             current_move = int(self.moves[self.current_move])
-            print(current_move)
             self.done_moves.append(current_move)
             return current_move
         else:
@@ -59,8 +60,8 @@ class MovesSequence:
             return current_move
 
     def save_done_moves(self, score, time):
-        file_with_seq = MovesSequence.path_to_evolution + "dead_gen_" \
-                        + str(generation) + "_s_" + str(score) + "_t_" \
+        file_with_seq = MovesSequence.path_to_evolution + "gen_" \
+                        + str(generation) + "_dead_s_" + str(score) + "_t_" \
                                                   + str(time) + ".seq"
         with open(file_with_seq, 'w') as seq_file:
             for move in self.done_moves:
@@ -112,7 +113,8 @@ class Mob(pygame.sprite.Sprite):
     def dump_state_vector(self, player):
         player_x = player.rect.centerx
         player_y = player.rect.bottom
-        distance = round(sqrt((player_x - self.rect.x) * (player_x - self.rect.x) + (player_y - self.rect.y) * (player_y - self.rect.y)))
+        distance = round(sqrt((player_x - self.rect.x) * (player_x - self.rect.x)
+                              + (player_y - self.rect.y) * (player_y - self.rect.y)))
         return [distance, self.speedx, self.speedy]
 
     def update(self):
@@ -144,6 +146,23 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 
+def dump_as_vector(mobs, player, bullets, action):
+
+    state = list()
+    state.append(action)
+    state.extend(player.dump_state_vector())
+
+    for mob in mobs.sprites():
+        state.extend(mob.dump_state_vector(player))
+
+    # pad with empty mobs to have vector of the same size
+    mob_length = len(mobs.sprites())
+    for j in range(MOBS_SIZE - mob_length):
+        state.extend([0, 0, 0, 0])
+
+    print(','.join(map(str, state)))
+
+
 # Load all game graphics
 background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
 background_rect = background.get_rect()
@@ -171,6 +190,7 @@ running = True
 while running:
     # keep loop running at the right speed
     clock.tick(FPS)
+    wasShooting = False
 
     action = ai_model.next()
 
@@ -182,6 +202,7 @@ while running:
 
     if action == 2 or action == 4 or action == 5:
         player.shoot()
+        wasShooting = True
     else:
         player.update_with_action(action)
 
@@ -200,6 +221,8 @@ while running:
     hits = pygame.sprite.spritecollide(player, mobs, False)
     if hits:
         running = False
+
+    dump_as_vector(mobs, player, bullets, action)
 
     # Draw / render
     screen.fill(BLACK)

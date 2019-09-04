@@ -16,6 +16,7 @@ while zysk z kolejnego pokolenia > 0.10:
         proponowana_sekwencja_ruchów = generuj_kolejny_ruch(numer_pokolenia, sekwencja)
         rzeczywista_sekwencja_ruchów, score = graj(proponowana_sekwencja_ruchów, numer_pokolenia) // (jezeli sekwencja skonczy się przed śmiercią - dopełniaj ją jednym ruchem - strzałem)
         zapisz_sekwencje_wynikową
+        zapisz dane treningowe
     zapisz zysk z pokolenia 
     zwiększ numer_pokolenia 
     
@@ -31,6 +32,9 @@ todo:
 - wybór najlepszych sekwnecji ruchu z każdego pokolenia do uczenia sieci
 
 
-
 # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
 # 4 - left + shoot, 5 - right + shoot
+
+done 
+- wczytywanie sekwencji ruchow
+- zapisywanie ruchow wykonanych + score + time
