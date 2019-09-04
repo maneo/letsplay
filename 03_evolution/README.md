@@ -35,6 +35,10 @@ todo:
 # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
 # 4 - left + shoot, 5 - right + shoot
 
+pytania:
+- uwzgledniac to czy udalo sie wykonac wszystkie ruchy
+- czy strzal powinien byc domyslnym ruchem
+
 done 
 - wczytywanie sekwencji ruchow
 - zapisywanie ruchow wykonanych + score + time
