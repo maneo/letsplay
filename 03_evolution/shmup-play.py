@@ -37,7 +37,8 @@ clock = pygame.time.Clock()
 
 
 class MovesSequence:
-    default_move = 2   # if doubt shoot!
+    # default_move = 2   # if doubt shoot!
+    default_move = 3
     path_to_evolution = "./evolution/"
 
     def __init__(self, generation):

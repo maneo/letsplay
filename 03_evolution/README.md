@@ -28,6 +28,7 @@ wybierz_najmocniejsze_sekwencje():
 
 todo:
 - główną pętle uczenia z uruchamianiem gry (narazie jeden wątek)
+- xargsem zrownloeglic
 - w grze zrobić wczytywanie sekwnecji ruchów, przyjmowanie jej na wejściu
 - wybór najlepszych sekwnecji ruchu z każdego pokolenia do uczenia sieci
 
