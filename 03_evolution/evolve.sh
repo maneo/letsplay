@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 generation=1
+prev_score=0
+gradient=0
 
-while [[ ${generation} -le 3 ]]
+while [[ ${gradient} -gt 0 ]] || [[ ${generation} -le 3 ]]
 do
   variant="${generation}_1"
   logfile="./evolution/logs/dead_gen_${variant}.log"
@@ -25,5 +27,9 @@ do
   python shmup-play.py "${variant}" >> ${logfile}
 
   python generator.py "${generation}"
+
+  current_score=`python scorer.py "${generation}"`
+  gradient=`expr ${current_score} - ${prev_score}`
+
   ((generation++))
 done

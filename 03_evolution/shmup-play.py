@@ -11,7 +11,7 @@ import time
 import sys
 
 img_dir = path.join(path.dirname(__file__), 'img')
-generation = 1
+generation = "1_1"
 generation = sys.argv[1]
 
 WIDTH = 480
@@ -236,5 +236,5 @@ while running:
 end = time.time()
 
 print("time: {} sec, score: {}".format(round(end - game_start_time), score))
-ai_model.save_done_moves(round(end - game_start_time), score)
+ai_model.save_done_moves(score, round(end - game_start_time))
 pygame.quit()
