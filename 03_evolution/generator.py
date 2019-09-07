@@ -12,6 +12,12 @@ def load_moves(file_name):
         return seq_file.readlines()
 
 
+def new_moves_generator(moves_to_extend, variant):
+    variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5}
+    moves_to_extend.append("\n" + str(variants_and_moves[variant]))
+    return moves_to_extend
+
+
 # candidate { "seq_file", "generation", "variant", "score", "time" }
 # possible moves
 # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
@@ -26,10 +32,7 @@ def evolve(candidate, generation):
         new_candidate = dict()
         new_candidate["generation"] = new_generation
         new_candidate["variant"] = v
-
-        new_moves = moves.copy()
-        new_moves.append("\n" + str(variants_and_moves[v]))
-        new_candidate["moves"] = new_moves
+        new_candidate["moves"] = new_moves_generator(moves.copy(), v)
         next_generation.append(new_candidate)
     return next_generation
 

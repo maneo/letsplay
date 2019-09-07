@@ -45,20 +45,27 @@ class MovesSequence:
         file_with_seq = MovesSequence.path_to_evolution + "gen_" + str(generation) + ".seq"
         with open(file_with_seq, 'r') as seq_file:
             self.moves = seq_file.readlines()
-        self.current_move = 0
+        self.current_move_idx = 0
         self.generation = generation
+        self.seq_is_over = False
         self.done_moves = []
 
     def next(self):
-        self.current_move = self.current_move + 1
-        if self.current_move < len(self.moves):
-            current_move = int(self.moves[self.current_move])
-            self.done_moves.append(current_move)
-            return current_move
+        if self.current_move_idx < len(self.moves):
+            current_action = int(self.moves[self.current_move_idx])
+            self.done_moves.append(current_action)
+            self.current_move_idx = self.current_move_idx + 1
+            return current_action
         else:
-            current_move = MovesSequence.default_move
-            self.done_moves.append(current_move)
-            return current_move
+            # give some time to bullets to reach target
+            how_far_beyond = self.current_move_idx - len(self.moves)
+            if how_far_beyond > 100:
+                self.seq_is_over = True
+
+            current_action = MovesSequence.default_move
+            self.done_moves.append(current_action)
+            self.current_move_idx = self.current_move_idx + 1
+            return current_action
 
     def save_done_moves(self, score, time):
         file_with_seq = MovesSequence.path_to_evolution + "gen_" \
@@ -147,7 +154,7 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 
-def dump_as_vector(mobs, player, bullets, action):
+def dump_as_vector(mobs, player, bullets, action, score):
 
     state = list()
     state.append(action)
@@ -223,7 +230,7 @@ while running:
     if hits:
         running = False
 
-    dump_as_vector(mobs, player, bullets, action)
+    dump_as_vector(mobs, player, bullets, action, score)
 
     # Draw / render
     screen.fill(BLACK)
@@ -231,6 +238,9 @@ while running:
     all_sprites.draw(screen)
     # *after* drawing everything, flip the display
     pygame.display.flip()
+    if ai_model.seq_is_over:
+        # when end of seq is reached terminate game
+        break
 
 
 end = time.time()
