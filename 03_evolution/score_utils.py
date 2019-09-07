@@ -1,4 +1,3 @@
-import sys
 import re
 import os
 
@@ -26,7 +25,8 @@ def parse_generation_metadata(generation, path_to_evolution):
                 data = dict()
                 data['dead_seq_file'] = os.path.join(r, file)
                 data['generation'], data['variant'], data['score'], data['time'],  = parse_score(file)
-                data['seq_file'] = os.path.join(r, "gen_" + data['generation'] + "_" + data['variant'] + ".seq")
+                seq_file_name = "gen_" + data['generation'] + "_" + data['variant'] + ".seq"
+                data['seq_file'] = os.path.join(r, seq_file_name)
                 generation_data[file] = data
 
     return generation_data
