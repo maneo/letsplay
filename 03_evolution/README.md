@@ -28,13 +28,13 @@ wybierz_najmocniejsze_sekwencje():
 
 todo:
 - xargsem zrownloeglic
-- zeby nieco przyspieszyc ewolucje - zabijac gre 5-10 klatek po zakonczeniu sekwencji ruchow? 
 - dodać obliczanie punktów z danego pokolenia jako tool i uzależnić od niego dalszą naukę 
 - uruchomić żeby sobie grało
-- dodać licznik punktów do stanu gry
-- Uwzględnić scorea na pewno będzie potrzebny przy RL. 
+- wyuczyć sieć na podstawie najlepszych danych z gier ze stu najlepszych sekwencji
+- zobaczyć jak będzie grała
 - Klasyfikator który uwzględnia funkcję celu - na tym się trzeba zastanowić 
-- Stanem jest sekwencja ruchów. 
+- Stanem jest sekwencja poprzednich stanów gry. 
+- zmienić algorytm tworzenia nowych pokoleń
 
 # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
 # 4 - left + shoot, 5 - right + shoot
@@ -44,6 +44,9 @@ pytania:
 - czy strzal powinien byc domyslnym ruchem
 
 done 
+- Uwzględnić scorea na pewno będzie potrzebny przy RL. 
+- dodać licznik punktów do stanu gry
+- zeby nieco przyspieszyc ewolucje - zabijac gre 5-10 klatek po zakonczeniu sekwencji ruchow? 
 - wybór najlepszych sekwnecji ruchu z każdego pokolenia do uczenia sieci
 - w grze zrobić wczytywanie sekwnecji ruchów, przyjmowanie jej na wejściu
 - główną pętle uczenia z uruchamianiem gry (narazie jeden wątek)

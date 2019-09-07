@@ -27,7 +27,7 @@ preso
 * reinforcement learning niech sam wymyśli optymalny algorytm
 
 todo
-* dodać licznik punktów
+* dodać licznik punktów do stanu gry
 * dodac odleglosc w x i y
 * dodać pamiec poprzednich klatek
 
