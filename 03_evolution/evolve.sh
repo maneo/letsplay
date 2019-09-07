@@ -4,7 +4,7 @@ generation=1
 prev_score=0
 gradient=0
 
-while [[ ${gradient} -gt 0 ]] || [[ ${generation} -le 3 ]]
+while [[ ${gradient} -gt 0 ]] || [[ ${generation} -le 1000 ]]
 do
   variant="${generation}_1"
   logfile="./evolution/logs/dead_gen_${variant}.log"
@@ -30,6 +30,8 @@ do
 
   current_score=`python scorer.py "${generation}"`
   gradient=`expr ${current_score} - ${prev_score}`
+  echo "current_score: ${current_score} - prev_score: ${prev_score} - generation: ${generation}"
+  prev_score=${current_score}
 
   ((generation++))
 done
