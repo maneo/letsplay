@@ -2,6 +2,7 @@ import sys
 import re
 import os
 import score_utils as sc
+import random
 
 generation = int(sys.argv[1])
 path_to_evolution = "./evolution/"
@@ -15,6 +16,15 @@ def load_moves(file_name):
 def new_moves_generator(moves_to_extend, variant):
     variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5}
     moves_to_extend.append("\n" + str(variants_and_moves[variant]))
+    moves_to_extend.append("\n" + str(random.randint(0, 5)))
+    moves_to_extend.append("\n" + str(variants_and_moves[variant]))
+    moves_to_extend.append("\n" + str(random.randint(0, 5)))
+    moves_to_extend.append("\n" + str(variants_and_moves[variant]))
+    moves_to_extend.append("\n" + str(random.randint(0, 5)))
+    moves_to_extend.append("\n" + str(variants_and_moves[variant]))
+    moves_to_extend.append("\n" + str(random.randint(0, 5)))
+    moves_to_extend.append("\n" + str(variants_and_moves[variant]))
+    moves_to_extend.append("\n" + str(random.randint(0, 5)))
     return moves_to_extend
 
 

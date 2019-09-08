@@ -1,4 +1,8 @@
 
+experiment 2
+Sat Sep  7 21:43:54 CEST 2019
+Sun Sep  8 08:19:03 CEST 2019
+
 - generowanie sekwencji ruchów, która prowadzi do poprawy, 
 - jeżeli doprowadziła do lepszego wyniku, to wchodzi do zbioru treningowego
 - jeżeli nie to odrzucamy i gramy jeszcze raz 
