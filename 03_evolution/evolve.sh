@@ -8,7 +8,7 @@ experiment_name=$1
 base_dir_name="./evolution/${experiment_name}"
 logs_dir="${base_dir_name}/logs"
 
-while [[ ${gradient} -gt 0 ]] || [[ ${generation} -le 3 ]]
+while [[ ${gradient} -gt 0 ]] || [[ ${generation} -le 20 ]]
 do
   variant="${generation}_1"
   logfile="${logs_dir}/dead_gen_${variant}.log"

@@ -47,3 +47,4 @@ def get_best_seqs(generations_metadata, best_by_field):
 def path_to_evolution():
     experiment_name = sys.argv[1]
     return "./evolution/" + experiment_name + "/"
+
