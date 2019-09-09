@@ -14,7 +14,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
 
-img_dir = path.join(path.dirname(__file__), '../img')
+img_dir = path.join(path.dirname(__file__), './img')
 
 WIDTH = 480
 HEIGHT = 600

@@ -3,8 +3,8 @@ import re
 import os
 import score_utils as sc
 
-generation = int(sys.argv[1])
-path_to_evolution = "./evolution/"
+generation = int(sys.argv[2])
+path_to_evolution = sc.path_to_evolution()
 
 
 def load_moves(file_name):

@@ -9,10 +9,10 @@ import random
 from os import path
 import time
 import sys
+import score_utils as sc
 
 img_dir = path.join(path.dirname(__file__), 'img')
-generation = "1_1"
-generation = sys.argv[1]
+generation = sys.argv[2]
 
 WIDTH = 480
 HEIGHT = 600
@@ -39,10 +39,10 @@ clock = pygame.time.Clock()
 class MovesSequence:
     # default_move = 2   # if doubt shoot!
     default_move = 3
-    path_to_evolution = "./evolution/"
 
-    def __init__(self, generation):
-        file_with_seq = MovesSequence.path_to_evolution + "gen_" + str(generation) + ".seq"
+    def __init__(self, generation, path_to_evolution):
+        self.path_to_evolution = path_to_evolution
+        file_with_seq = self.path_to_evolution + "gen_" + str(generation) + ".seq"
         with open(file_with_seq, 'r') as seq_file:
             self.moves = seq_file.readlines()
         self.current_move_idx = 0
@@ -68,7 +68,7 @@ class MovesSequence:
             return current_action
 
     def save_done_moves(self, score, time):
-        file_with_seq = MovesSequence.path_to_evolution + "gen_" \
+        file_with_seq = self.path_to_evolution + "gen_" \
                         + str(generation) + "_dead_s_" + str(score) + "_t_" \
                                                   + str(time) + ".seq"
         with open(file_with_seq, 'w') as seq_file:
@@ -191,7 +191,7 @@ for i in range(MOBS_SIZE):
 game_start_time = time.time()
 score = 0
 
-ai_model = MovesSequence(generation)
+ai_model = MovesSequence(generation, sc.path_to_evolution())
 
 # Game loop
 running = True
