@@ -13,6 +13,9 @@ def load_moves(file_name):
         return seq_file.readlines()
 
 
+# 0 - left, 1 - right, 2 - shoot, 3 - nothing,
+# 4 - left + shoot, 5 - right + shoot
+
 def new_moves_generator(moves_to_extend, variant):
     variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5}
     moves_to_extend.append("\n" + str(variants_and_moves[variant]))
@@ -34,6 +37,26 @@ def new_moves_generator_kruk(moves_to_extend, variant):
     return moves_to_extend
 
 
+def new_moves_generator_smok(moves_to_extend, variant):
+    variants_and_moves = [ "\n0\n4\n\0\n4\n0\n4",
+                           "\n1\n5\n\1\n5\n1\n5",
+                           "\n4\n4\n\4\n4\n4\n4",
+                           "\n5\n5\n\5\n5\n5\n5",
+                           random_moves(6)
+                         ]
+    random_variant = random.randint(0,5)
+    moves_to_extend.append(variants_and_moves[random_variant])
+    return moves_to_extend
+
+
+def random_moves(how_many):
+    sequence = ""
+    for i in range(0, how_many):
+        random_move = "\n" + str(random.randint(0, 5))
+        sequence = sequence + random_move
+    return sequence
+
+
 # candidate { "seq_file", "generation", "variant", "score", "time" }
 # possible moves
 # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
@@ -48,7 +71,9 @@ def evolve(candidate, generation):
         new_candidate = dict()
         new_candidate["generation"] = new_generation
         new_candidate["variant"] = v
-        new_candidate["moves"] = new_moves_generator_kruk(moves.copy(), v)
+        # new_candidate["moves"] = new_moves_generator(moves.copy(), v)
+        # new_candidate["moves"] = new_moves_generator_kruk(moves.copy(), v)
+        new_candidate["moves"] = new_moves_generator_smok(moves.copy(), v)
         next_generation.append(new_candidate)
     return next_generation
 
