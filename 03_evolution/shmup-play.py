@@ -69,8 +69,8 @@ class MovesSequence:
 
     def save_done_moves(self, score, time):
         file_with_seq = self.path_to_evolution + "gen_" \
-                        + str(generation) + "_dead_s_" + str(score) + "_t_" \
-                                                  + str(time) + ".seq"
+                        + str(generation) + "_dead_s_" + str(int(score)) \
+                        + "_t_" + str(int(time)) + ".seq"
         with open(file_with_seq, 'w') as seq_file:
             for move in self.done_moves:
                 seq_file.write(str(move) + "\n")

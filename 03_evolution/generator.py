@@ -38,13 +38,13 @@ def new_moves_generator_kruk(moves_to_extend, variant):
 
 
 def new_moves_generator_smok(moves_to_extend, variant):
-    variants_and_moves = [ "\n0\n4\n\0\n4\n0\n4",
-                           "\n1\n5\n\1\n5\n1\n5",
-                           "\n4\n4\n\4\n4\n4\n4",
-                           "\n5\n5\n\5\n5\n5\n5",
+    variants_and_moves = [ "\n0\n4\n0\n4\n0\n4",
+                           "\n1\n5\n1\n5\n1\n5",
+                           "\n4\n4\n4\n4\n4\n4",
+                           "\n5\n5\n5\n5\n5\n5",
                            random_moves(6)
                          ]
-    random_variant = random.randint(0,5)
+    random_variant = random.randint(0, 4)
     moves_to_extend.append(variants_and_moves[random_variant])
     return moves_to_extend
 
