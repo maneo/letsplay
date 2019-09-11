@@ -42,7 +42,8 @@ def new_moves_generator_kruk(moves_to_extend, variant):
 
 
 def new_moves_generator_smok(moves_to_extend, variant):
-    variants_and_moves = [ ["0", "4", "0", "4", "0", "4"],
+    variants_and_moves = [
+                           ["0", "4", "0", "4", "0", "4"],
                            ["1", "5", "1", "5", "1", "5"],
                            ["4", "4", "4", "4", "4", "4"],
                            ["5", "5", "5", "5", "5", "5"],
@@ -168,9 +169,9 @@ if generation > 1:
 
 generations_metada.update(sc.parse_generation_metadata(generation, path_to_evolution))
 
-candidates = sc.get_best_candidates(generations_metada, "score")
+candidates = sc.get_best_candidates(generations_metada)
 
 # todo test both games scenario
-new_moves = evolve(candidates, generation)
-# new_moves = evolve_fixed_length(candidates, generation)
+# new_moves = evolve(candidates, generation)
+new_moves = evolve_fixed_length(candidates, generation)
 save_new_moves(new_moves, path_to_evolution)

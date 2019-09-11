@@ -11,6 +11,6 @@ if generation > 1:
 
 generations_metadata.update(sc.parse_generation_metadata(generation, path_to_evolution))
 
-candidate = sc.get_best_seqs(generations_metadata, "score")
+candidate = sc.get_best_candidates(generations_metadata)[0]
 
 print(candidate['score'])
