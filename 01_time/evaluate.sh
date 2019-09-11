@@ -8,7 +8,7 @@ function eval_experiment() {
 
 	rm $logfile
 
-	while [ $i -le $max_attempts ]
+	while [[ $i -le ${max_attempts} ]]
 	do
 	 python shmup-play-${experiment_name}.py >> $logfile
 	 ((i++))

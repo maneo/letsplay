@@ -11,22 +11,25 @@ logs_dir="${base_dir_name}/logs"
 mkdir -p ${logs_dir}
 
 function run_variant_parallel() {
+
+  # run the same move seq x5 to have less accidental score
+
   logfile="${logs_dir}/dead_gen_${variant}_run_1.log"
   python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
 
-#  logfile="${logs_dir}/dead_gen_${variant}_run_2.log"
-#  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
-#
-#  logfile="${logs_dir}/dead_gen_${variant}_run_3.log"
-#  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
-#
-#  logfile="${logs_dir}/dead_gen_${variant}_run_4.log"
-#  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
-#
-#  logfile="${logs_dir}/dead_gen_${variant}_run_5.log"
-#  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
-#
-#  wait
+  logfile="${logs_dir}/dead_gen_${variant}_run_2.log"
+  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+
+  logfile="${logs_dir}/dead_gen_${variant}_run_3.log"
+  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+
+  logfile="${logs_dir}/dead_gen_${variant}_run_4.log"
+  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+
+  logfile="${logs_dir}/dead_gen_${variant}_run_5.log"
+  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+
+  wait
 }
 
 while [[ ${gradient} -gt 0 ]] || [[ ${generation} -le 2 ]]
@@ -45,8 +48,6 @@ do
 
   variant="${generation}_5"
   run_variant_parallel
-
-  wait
 
   python generator.py "${experiment_name}" "${generation}"
 
