@@ -51,7 +51,7 @@ class MovesSequence:
         self.done_moves = []
 
     def next(self):
-        if self.current_move_idx < len(self.moves):
+        if self.current_move_idx < (len(self.moves) - 1):
             current_action = int(self.moves[self.current_move_idx])
             self.done_moves.append(current_action)
             self.current_move_idx = self.current_move_idx + 1

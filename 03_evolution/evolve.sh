@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 generation=1
-prev_score=0
+max_score=0
 gradient=0
 experiment_name=$1
 
@@ -10,37 +10,54 @@ logs_dir="${base_dir_name}/logs"
 
 mkdir -p ${logs_dir}
 
+function run_variant_parallel() {
+  logfile="${logs_dir}/dead_gen_${variant}_run_1.log"
+  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+
+#  logfile="${logs_dir}/dead_gen_${variant}_run_2.log"
+#  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+#
+#  logfile="${logs_dir}/dead_gen_${variant}_run_3.log"
+#  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+#
+#  logfile="${logs_dir}/dead_gen_${variant}_run_4.log"
+#  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+#
+#  logfile="${logs_dir}/dead_gen_${variant}_run_5.log"
+#  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+#
+#  wait
+}
+
 while [[ ${gradient} -gt 0 ]] || [[ ${generation} -le 2 ]]
 do
   variant="${generation}_1"
-  logfile="${logs_dir}/dead_gen_${variant}.log"
-  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+  run_variant_parallel
 
   variant="${generation}_2"
-  logfile="${logs_dir}/dead_gen_${variant}.log"
-  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+  run_variant_parallel
 
   variant="${generation}_3"
-  logfile="${logs_dir}/dead_gen_${variant}.log"
-  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+  run_variant_parallel
 
   variant="${generation}_4"
-  logfile="${logs_dir}/dead_gen_${variant}.log"
-  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+  run_variant_parallel
 
   variant="${generation}_5"
-  logfile="${logs_dir}/dead_gen_${variant}.log"
-  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
+  run_variant_parallel
 
   wait
+
   python generator.py "${experiment_name}" "${generation}"
 
   current_score=`python scorer.py "${experiment_name}" "${generation}"`
-  gradient=`expr ${current_score} - ${prev_score}`
-  echo "current_score: ${current_score} - prev_score: ${prev_score} - generation: ${generation} - gradient: ${gradient}"
-  prev_score=$(( prev_score > current_score ? prev_score : current_score ))
+  gradient=`expr ${current_score} - ${max_score}`
 
-  echo "${generation},${prev_score},${current_score}" >> "${base_dir_name}/progress.log"
+  echo "current_score: ${current_score} - max_score: ${max_score} - generation: ${generation} - gradient: ${gradient}"
+
+  max_score=$(( max_score > current_score ? max_score : current_score ))
+
+  echo "${generation},${max_score},${current_score}" >> "${base_dir_name}/progress.log"
 
   ((generation++))
 done

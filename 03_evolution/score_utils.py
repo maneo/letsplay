@@ -32,7 +32,7 @@ def parse_generation_metadata(generation, path_to_evolution):
 
     return generation_data
 
-
+# deprecated use get_best_candidates
 def get_best_seqs(generations_metadata, best_by_field):
     best_score = 0
     best_key = ""
@@ -42,6 +42,19 @@ def get_best_seqs(generations_metadata, best_by_field):
             best_score = score
             best_key = key
     return generations_metadata[best_key]
+
+
+def get_best_candidates(generations_metadata, best_by_field):
+    dict_by_score = dict()
+    for key in generations_metadata:
+        score = int(generations_metadata[key][best_by_field])
+        dict_by_score[score] = generations_metadata[key]
+
+    sorted_candidates = list()
+    for key in sorted(dict_by_score.keys(), reverse=True):
+        sorted_candidates.append(dict_by_score[key])
+
+    return sorted_candidates
 
 
 def path_to_evolution():
