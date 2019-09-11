@@ -10,7 +10,11 @@ path_to_evolution = sc.path_to_evolution()
 
 def load_moves(file_name):
     with open(file_name, 'r') as seq_file:
-        return seq_file.readlines()
+        raw_seq = seq_file.readlines()
+        clean_seq = list()
+        for move in raw_seq:
+            clean_seq.append(move.rstrip())
+        return clean_seq
 
 
 # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
@@ -18,35 +22,43 @@ def load_moves(file_name):
 
 def new_moves_generator(moves_to_extend, variant):
     variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5}
-    moves_to_extend.append("\n" + str(variants_and_moves[variant]))
+    moves_to_extend.append(str(variants_and_moves[variant]))
     return moves_to_extend
 
 
 def new_moves_generator_kruk(moves_to_extend, variant):
     variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5}
-    moves_to_extend.append("\n" + str(variants_and_moves[variant]))
-    moves_to_extend.append("\n" + str(random.randint(0, 5)))
-    moves_to_extend.append("\n" + str(variants_and_moves[variant]))
-    moves_to_extend.append("\n" + str(random.randint(0, 5)))
-    moves_to_extend.append("\n" + str(variants_and_moves[variant]))
-    moves_to_extend.append("\n" + str(random.randint(0, 5)))
-    moves_to_extend.append("\n" + str(variants_and_moves[variant]))
-    moves_to_extend.append("\n" + str(random.randint(0, 5)))
-    moves_to_extend.append("\n" + str(variants_and_moves[variant]))
-    moves_to_extend.append("\n" + str(random.randint(0, 5)))
+    moves_to_extend.append(str(variants_and_moves[variant]))
+    moves_to_extend.append(str(random.randint(0, 5)))
+    moves_to_extend.append(str(variants_and_moves[variant]))
+    moves_to_extend.append(str(random.randint(0, 5)))
+    moves_to_extend.append(str(variants_and_moves[variant]))
+    moves_to_extend.append(str(random.randint(0, 5)))
+    moves_to_extend.append(str(variants_and_moves[variant]))
+    moves_to_extend.append(str(random.randint(0, 5)))
+    moves_to_extend.append(str(variants_and_moves[variant]))
+    moves_to_extend.append(str(random.randint(0, 5)))
     return moves_to_extend
 
 
 def new_moves_generator_smok(moves_to_extend, variant):
-    variants_and_moves = [ "\n0\n4\n0\n4\n0\n4",
-                           "\n1\n5\n1\n5\n1\n5",
-                           "\n4\n4\n4\n4\n4\n4",
-                           "\n5\n5\n5\n5\n5\n5",
+    variants_and_moves = [ ["0", "4", "0", "4", "0", "4"],
+                           ["1", "5", "1", "5", "1", "5"],
+                           ["4", "4", "4", "4", "4", "4"],
+                           ["5", "5", "5", "5", "5", "5"],
                            random_moves(6)
                          ]
     random_variant = random.randint(0, 4)
     moves_to_extend.append(variants_and_moves[random_variant])
     return moves_to_extend
+
+
+def random_moves(how_many):
+    sequence = list()
+    for i in range(0, how_many):
+        random_move = str(random.randint(0, 5))
+        sequence.append(random_move)
+    return sequence
 
 
 def crossover(parent1_moves, parent2_moves):
@@ -67,18 +79,10 @@ def mutate(offspring_moves, how_many_mutations):
     mutant_moves = offspring_moves.copy()
 
     for i in range(0, how_many_mutations):
-        mutation_idx = random.randint(0, len(offspring_moves))
-        mutant_moves[mutation_idx] = "\n" + str(random.randint(0, 5))
+        mutation_idx = random.randint(0, len(offspring_moves) - 1)
+        mutant_moves[mutation_idx] = str(random.randint(0, 5))
 
     return mutant_moves
-
-
-def random_moves(how_many):
-    sequence = ""
-    for i in range(0, how_many):
-        random_move = "\n" + str(random.randint(0, 5))
-        sequence = sequence + random_move
-    return sequence
 
 
 # candidate { "seq_file", "generation", "variant", "score", "time" }
@@ -97,9 +101,15 @@ def evolve(candidates, generation):
         new_candidate["generation"] = new_generation
         new_candidate["variant"] = v
         # new_candidate["moves"] = new_moves_generator(moves.copy(), v)
-        # new_candidate["moves"] = new_moves_generator_kruk(moves.copy(), v)
-        new_candidate["moves"] = new_moves_generator_smok(moves.copy(), v)
+        new_candidate["moves"] = new_moves_generator_kruk(moves.copy(), v)
+        # new_candidate["moves"] = new_moves_generator_smok(moves.copy(), v)
         next_generation.append(new_candidate)
+
+    for i in range(0, 4):
+        moves_to_mutate = next_generation[i]["moves"]
+        how_many_mutation = round(len(moves_to_mutate) / 10)
+        next_generation[i]["moves"] = mutate(moves_to_mutate, how_many_mutation)
+
     return next_generation
 
 
@@ -144,9 +154,10 @@ def save_new_moves(new_moves, path_to_evolution):
     for new_move in new_moves:
         filename = os.path.join(path_to_evolution, "gen_"
                                 + str(new_move["generation"]) + "_"
-                                + new_move["variant"] + ".seq")
+                                + str(new_move["variant"]) + ".seq")
         with open(filename, 'w') as out:
-            out.writelines(new_move["moves"])
+            for move in new_move["moves"]:
+                out.write(str(move) + "\n")
         print(filename + " generated")
 
 
@@ -160,6 +171,6 @@ generations_metada.update(sc.parse_generation_metadata(generation, path_to_evolu
 candidates = sc.get_best_candidates(generations_metada, "score")
 
 # todo test both games scenario
-# new_moves = evolve(candidates, generation)
-new_moves = evolve_fixed_length(candidates, generation)
+new_moves = evolve(candidates, generation)
+# new_moves = evolve_fixed_length(candidates, generation)
 save_new_moves(new_moves, path_to_evolution)

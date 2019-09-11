@@ -51,8 +51,8 @@ def get_best_candidates(generations_metadata, best_by_field):
         dict_by_score[score] = generations_metadata[key]
 
     sorted_candidates = list()
-    for key in sorted(dict_by_score.keys()):
-        sorted_candidates.append(generations_metadata[key])
+    for key in sorted(dict_by_score.keys(), reverse=True):
+        sorted_candidates.append(dict_by_score[key])
 
     return sorted_candidates
 
