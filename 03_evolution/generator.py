@@ -49,7 +49,7 @@ def new_moves_generator_smok(moves_to_extend, variant):
                            random_moves(6)
                          ]
     random_variant = random.randint(0, 4)
-    moves_to_extend.append(variants_and_moves[random_variant])
+    moves_to_extend.extend(variants_and_moves[random_variant])
     return moves_to_extend
 
 
@@ -101,8 +101,8 @@ def evolve(candidates, generation):
         new_candidate["generation"] = new_generation
         new_candidate["variant"] = v
         # new_candidate["moves"] = new_moves_generator(moves.copy(), v)
-        new_candidate["moves"] = new_moves_generator_kruk(moves.copy(), v)
-        # new_candidate["moves"] = new_moves_generator_smok(moves.copy(), v)
+        # new_candidate["moves"] = new_moves_generator_kruk(moves.copy(), v)
+        new_candidate["moves"] = new_moves_generator_smok(moves.copy(), v)
         next_generation.append(new_candidate)
 
     for i in range(0, 4):
@@ -171,6 +171,6 @@ generations_metada.update(sc.parse_generation_metadata(generation, path_to_evolu
 candidates = sc.get_best_candidates(generations_metada, "score")
 
 # todo test both games scenario
-new_moves = evolve(candidates, generation)
-# new_moves = evolve_fixed_length(candidates, generation)
+# new_moves = evolve(candidates, generation)
+new_moves = evolve_fixed_length(candidates, generation)
 save_new_moves(new_moves, path_to_evolution)
