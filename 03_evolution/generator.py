@@ -1,12 +1,10 @@
 import sys
-import re
 import os
 import score_utils as sc
 import random
 
 generation = int(sys.argv[2])
 path_to_evolution = sc.path_to_evolution()
-
 
 def load_moves(file_name):
     with open(file_name, 'r') as seq_file:
@@ -21,23 +19,23 @@ def load_moves(file_name):
 # 4 - left + shoot, 5 - right + shoot
 
 def new_moves_generator(moves_to_extend, variant):
-    variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5}
+    variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5, "6": 3}
     moves_to_extend.append(str(variants_and_moves[variant]))
     return moves_to_extend
 
 
 def new_moves_generator_kruk(moves_to_extend, variant):
-    variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5}
+    variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5, "6": 3}
     moves_to_extend.append(str(variants_and_moves[variant]))
-    moves_to_extend.append(str(random.randint(0, 5)))
+    moves_to_extend.append(random_move())
     moves_to_extend.append(str(variants_and_moves[variant]))
-    moves_to_extend.append(str(random.randint(0, 5)))
+    moves_to_extend.append(random_move())
     moves_to_extend.append(str(variants_and_moves[variant]))
-    moves_to_extend.append(str(random.randint(0, 5)))
+    moves_to_extend.append(random_move())
     moves_to_extend.append(str(variants_and_moves[variant]))
-    moves_to_extend.append(str(random.randint(0, 5)))
+    moves_to_extend.append(random_move())
     moves_to_extend.append(str(variants_and_moves[variant]))
-    moves_to_extend.append(str(random.randint(0, 5)))
+    moves_to_extend.append(random_move())
     return moves_to_extend
 
 
@@ -47,18 +45,23 @@ def new_moves_generator_smok(moves_to_extend, variant):
                            ["1", "5", "1", "5", "1", "5"],
                            ["4", "4", "4", "4", "4", "4"],
                            ["5", "5", "5", "5", "5", "5"],
+                           random_moves(6),
                            random_moves(6)
-                         ]
-    random_variant = random.randint(0, 4)
+                          ]
+    random_variant = random_move()
     moves_to_extend.extend(variants_and_moves[random_variant])
     return moves_to_extend
+
+
+def random_move():
+    return random_moves(1)[0]
 
 
 def random_moves(how_many):
     sequence = list()
     for i in range(0, how_many):
-        random_move = str(random.randint(0, 5))
-        sequence.append(random_move)
+        move = str(random.randint(0, 5))
+        sequence.append(move)
     return sequence
 
 
@@ -81,7 +84,7 @@ def mutate(offspring_moves, how_many_mutations):
 
     for i in range(0, how_many_mutations):
         mutation_idx = random.randint(0, len(offspring_moves) - 1)
-        mutant_moves[mutation_idx] = str(random.randint(0, 5))
+        mutant_moves[mutation_idx] = random_move()
 
     return mutant_moves
 
@@ -94,7 +97,7 @@ def evolve(candidates, generation):
     candidate = candidates[0]
     moves = load_moves(candidate["seq_file"])
     next_generation = list()
-    variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5}
+    variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5, "6": 3}
 
     new_generation = int(generation) + 1
     for v in variants_and_moves.keys():
@@ -106,7 +109,7 @@ def evolve(candidates, generation):
         # new_candidate["moves"] = new_moves_generator_smok(moves.copy(), v)
         next_generation.append(new_candidate)
 
-    for i in range(0, 4):
+    for i in range(0, len(variants_and_moves) - 1):
         moves_to_mutate = next_generation[i]["moves"]
         how_many_mutation = round(len(moves_to_mutate) / 10)
         next_generation[i]["moves"] = mutate(moves_to_mutate, how_many_mutation)
@@ -129,6 +132,7 @@ def evolve_fixed_length(candidates, generation):
     offspring_2_3_moves = crossover(best_parent2_moves, best_parent3_moves)
     mutant_1_2_moves = mutate(offspring_1_2_moves, random.randint(100, 200))
     mutant_3_1_moves = mutate(offspring_3_1_moves, random.randint(100, 200))
+    mutant_1_2_2_moves = mutate(offspring_1_2_moves, random.randint(100, 200))
 
     new_generation = int(generation) + 1
     new_candidates = list()
@@ -138,6 +142,7 @@ def evolve_fixed_length(candidates, generation):
     new_candidates.append(get_offspring(offspring_2_3_moves, 3, new_generation))
     new_candidates.append(get_offspring(mutant_1_2_moves, 4, new_generation))
     new_candidates.append(get_offspring(mutant_3_1_moves, 5, new_generation))
+    new_candidates.append(get_offspring(mutant_1_2_2_moves, 6, new_generation))
 
     return new_candidates
 
@@ -171,7 +176,7 @@ generations_metada.update(sc.parse_generation_metadata(generation, path_to_evolu
 
 candidates = sc.get_best_candidates(generations_metada)
 
-# todo test both games scenario
+# todo add params to specify that from cmd
 # new_moves = evolve(candidates, generation)
 new_moves = evolve_fixed_length(candidates, generation)
 save_new_moves(new_moves, path_to_evolution)

@@ -12,8 +12,7 @@ mkdir -p ${logs_dir}
 
 function run_variant_parallel() {
 
-  # run the same move seq x5 to have less accidental score
-
+  # run the same move seq x4 to have less accidental score
   logfile="${logs_dir}/dead_gen_${variant}_run_1.log"
   python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
 
@@ -26,10 +25,6 @@ function run_variant_parallel() {
   logfile="${logs_dir}/dead_gen_${variant}_run_4.log"
   python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
 
-  logfile="${logs_dir}/dead_gen_${variant}_run_5.log"
-  python shmup-play.py "${experiment_name}" "${variant}" >> ${logfile} &
-
-  wait
 }
 
 while [[ ${gradient} -gt 0 ]] || [[ ${generation} -le 2 ]]
@@ -40,14 +35,23 @@ do
   variant="${generation}_2"
   run_variant_parallel
 
+  wait
+
   variant="${generation}_3"
   run_variant_parallel
 
   variant="${generation}_4"
   run_variant_parallel
 
+  wait
+
   variant="${generation}_5"
   run_variant_parallel
+
+  variant="${generation}_6"
+  run_variant_parallel
+
+  wait
 
   python generator.py "${experiment_name}" "${generation}"
 

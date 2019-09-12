@@ -16,7 +16,7 @@ def parse_score(file_name):
 
 def parse_generation_metadata(generation, path_to_evolution):
     files = []
-    generation_data = {"1": list(), "2": list(), "3": list(), "4": list(), "5": list()}
+    generation_data = {"1": list(), "2": list(), "3": list(), "4": list(), "5": list(), "6": list()}
     for r, d, f in os.walk(path_to_evolution):
         for file in f:
             if ('gen_' + str(generation) in file) \
@@ -29,7 +29,6 @@ def parse_generation_metadata(generation, path_to_evolution):
                 seq_file_name = "gen_" + str(data['generation']) + "_" + str(data['variant']) + ".seq"
                 data['seq_file'] = os.path.join(r, seq_file_name)
                 generation_data[data['variant']].append(data)
-
     return generation_data
 
 
