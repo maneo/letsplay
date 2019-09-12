@@ -27,13 +27,54 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 
-
 # initialize pygame and create window
 pygame.init()
 pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Shmup!")
 clock = pygame.time.Clock()
+
+
+# 3,0,113,532,1,5,361,2,4,269,2,5,520,2,2,224,1,6,491,0,3,433,-2,2,516,2,5
+class GameState:
+    def __init__(self):
+        self.states = list()
+
+    def __save_state(self, last_game_state):
+        if len(self.states) >= 4:
+            self.states.pop(0)
+        self.states.append(last_game_state)
+        # print(str(self.states))
+
+    def dump_state(self):
+        game_state_vector = list()
+        if len(self.states) < 4:
+            # for first frames append with zeros
+            missing_states = 4 - len(self.states)
+            game_state_length = len(self.states[0])
+            for i in range(0, missing_states * game_state_length):
+                game_state_vector.append(0)
+
+        for state in self.states:
+            game_state_vector.extend(state)
+
+        return game_state_vector
+
+    def update_game(self, mobs, player, bullets, action, score):
+        state = list()
+        state.extend(player.dump_state_vector())
+
+        for mob in mobs.sprites():
+            state.extend(mob.dump_state_vector(player))
+
+        # pad with empty mobs to have vector of the same size
+        mob_length = len(mobs.sprites())
+        for j in range(MOBS_SIZE - mob_length):
+            state.extend([0, 0, 0, 0])
+
+        state.append(action)
+        self.__save_state(state)
+
 
 
 class MovesSequence:
@@ -154,23 +195,6 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 
-def dump_as_vector(mobs, player, bullets, action, score):
-
-    state = list()
-    state.append(action)
-    state.extend(player.dump_state_vector())
-
-    for mob in mobs.sprites():
-        state.extend(mob.dump_state_vector(player))
-
-    # pad with empty mobs to have vector of the same size
-    mob_length = len(mobs.sprites())
-    for j in range(MOBS_SIZE - mob_length):
-        state.extend([0, 0, 0, 0])
-
-    print(','.join(map(str, state)))
-
-
 # Load all game graphics
 background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
 background_rect = background.get_rect()
@@ -192,6 +216,7 @@ game_start_time = time.time()
 score = 0
 
 ai_model = MovesSequence(generation, sc.path_to_evolution())
+game_state = GameState()
 
 # Game loop
 running = True
@@ -230,7 +255,8 @@ while running:
     if hits:
         running = False
 
-    dump_as_vector(mobs, player, bullets, action, score)
+    game_state.update_game(mobs, player, bullets, action, score)
+    print(','.join(map(str, game_state.dump_state())))
 
     # Draw / render
     screen.fill(BLACK)
