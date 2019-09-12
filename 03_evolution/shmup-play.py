@@ -16,7 +16,7 @@ generation = sys.argv[2]
 
 WIDTH = 480
 HEIGHT = 600
-FPS = 60
+FPS = 240
 MOBS_SIZE = 8
 
 # define colors
