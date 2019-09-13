@@ -4,6 +4,10 @@
 # Adding graphics
 from math import sqrt
 
+# uncomment this to play headless
+# import os
+# os.environ['SDL_VIDEODRIVER'] = 'dummy'
+
 import pygame
 import random
 from os import path
@@ -11,7 +15,7 @@ import time
 import sys
 import score_utils as sc
 
-img_dir = path.join(path.dirname(__file__), 'img')
+img_dir = path.join(path.dirname(__file__), '../img')
 generation = sys.argv[2]
 
 WIDTH = 480
