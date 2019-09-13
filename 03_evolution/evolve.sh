@@ -32,7 +32,7 @@ function run_variant_parallel() {
   wait
 }
 
-while [[ ${gradient} -gt 0 ]] || [[ ${generation} -le 2 ]]
+while [[ ${gradient} -gt 0 ]] || [[ ${generation} -le 100 ]]
 do
   variant="${generation}_1"
   run_variant_parallel
