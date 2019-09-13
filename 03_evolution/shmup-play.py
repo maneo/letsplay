@@ -37,20 +37,22 @@ clock = pygame.time.Clock()
 
 # 3,0,113,532,1,5,361,2,4,269,2,5,520,2,2,224,1,6,491,0,3,433,-2,2,516,2,5
 class GameState:
+    memory_length = 4
+
     def __init__(self):
         self.states = list()
 
     def __save_state(self, last_game_state):
-        if len(self.states) >= 4:
+        if len(self.states) >= GameState.memory_length:
             self.states.pop(0)
         self.states.append(last_game_state)
         # print(str(self.states))
 
     def dump_state(self):
         game_state_vector = list()
-        if len(self.states) < 4:
+        if len(self.states) < GameState.memory_length:
             # for first frames append with zeros
-            missing_states = 4 - len(self.states)
+            missing_states = GameState.memory_length - len(self.states)
             game_state_length = len(self.states[0])
             for i in range(0, missing_states * game_state_length):
                 game_state_vector.append(0)
@@ -64,13 +66,16 @@ class GameState:
         state = list()
         state.extend(player.dump_state_vector())
 
+        mob_vector_size = 3
         for mob in mobs.sprites():
-            state.extend(mob.dump_state_vector(player))
+            mob_vec = mob.dump_state_vector(player)
+            state.extend(mob_vec)
+            mob_vector_size = len(mob_vec)
 
         # pad with empty mobs to have vector of the same size
         mob_length = len(mobs.sprites())
-        for j in range(MOBS_SIZE - mob_length):
-            state.extend([0, 0, 0, 0])
+        for j in range((MOBS_SIZE - mob_length) * mob_vector_size):
+            state.append(0)
 
         state.append(action)
         self.__save_state(state)
