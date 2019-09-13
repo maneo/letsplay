@@ -10,11 +10,11 @@ import random
 from os import path
 
 
-img_dir = path.join(path.dirname(__file__), 'img')
+img_dir = path.join(path.dirname(__file__), '../img')
 
 WIDTH = 480
 HEIGHT = 600
-FPS = 60
+FPS = 24
 MOBS_SIZE = 8
 
 # define colors
