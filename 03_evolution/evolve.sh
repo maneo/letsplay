@@ -3,6 +3,8 @@
 generation=1
 max_score=0
 gradient=0
+iteration_without_improvement=0
+recent_gain_generation=0
 experiment_name=$1
 
 base_dir_name="./evolution/${experiment_name}"
@@ -27,7 +29,7 @@ function run_variant_parallel() {
 
 }
 
-while [[ ${gradient} -gt 0 ]] || [[ ${generation} -le 2 ]]
+while [[ ${iteration_without_improvement} -le 2 ]] || [[ ${generation} -le 2 ]]
 do
   variant="${generation}_1"
   run_variant_parallel
@@ -35,15 +37,11 @@ do
   variant="${generation}_2"
   run_variant_parallel
 
-  wait
-
   variant="${generation}_3"
   run_variant_parallel
 
   variant="${generation}_4"
   run_variant_parallel
-
-  wait
 
   variant="${generation}_5"
   run_variant_parallel
@@ -63,6 +61,16 @@ do
   max_score=$(( max_score > current_score ? max_score : current_score ))
 
   echo "${generation},${max_score},${current_score}" >> "${base_dir_name}/progress.log"
+
+  if [[ ${gradient} -lt 0 ]]
+  then
+    ((iteration_without_improvement++))
+  else
+    iteration_without_improvement=0
+    recent_gain_generation=${generation}
+  fi
+
+  echo "iterations without improvement: ${iteration_without_improvement}"
 
   ((generation++))
 done

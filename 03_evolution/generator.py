@@ -6,6 +6,7 @@ import random
 generation = int(sys.argv[2])
 path_to_evolution = sc.path_to_evolution()
 
+
 def load_moves(file_name):
     with open(file_name, 'r') as seq_file:
         raw_seq = seq_file.readlines()
@@ -57,10 +58,14 @@ def random_move():
     return random_moves(1)[0]
 
 
+# 0 - left, 1 - right, 2 - shoot, 3 - nothing,
+# 4 - left + shoot, 5 - right + shoot
 def random_moves(how_many):
+    # skip do nothing move during move generation
+    reasonable_moves = { 0: 0, 1: 1, 2: 2, 3: 4, 4: 5 }
     sequence = list()
     for i in range(0, how_many):
-        move = str(random.randint(0, 5))
+        move = str(reasonable_moves[random.randint(0, 4)])
         sequence.append(move)
     return sequence
 
@@ -155,6 +160,37 @@ def get_offspring(moves, variant, generation):
     return new_candidate
 
 
+# less mutations, mutate best parent without crossover
+def evolve_fixed_length_sroka(candidates, generation):
+    best_parent1 = candidates[0]
+    best_parent1_moves = load_moves(best_parent1["seq_file"])
+
+    best_parent2 = candidates[1]
+    best_parent2_moves = load_moves(best_parent2["seq_file"])
+
+    best_parent3 = candidates[2]
+    best_parent3_moves = load_moves(best_parent3["seq_file"])
+
+    offspring_1_2_moves = crossover(best_parent1_moves, best_parent2_moves)
+    offspring_3_1_moves = crossover(best_parent3_moves, best_parent1_moves)
+    offspring_2_3_moves = crossover(best_parent2_moves, best_parent3_moves)
+    mutant_parent_1 = mutate(best_parent1, random.randint(10, 30))
+    mutant_3_1_moves = mutate(offspring_3_1_moves, random.randint(10, 30))
+    mutant_1_2_moves = mutate(offspring_1_2_moves, random.randint(10, 30))
+
+    new_generation = int(generation) + 1
+    new_candidates = list()
+
+    new_candidates.append(get_offspring(offspring_1_2_moves, 1, new_generation))
+    new_candidates.append(get_offspring(offspring_3_1_moves, 2, new_generation))
+    new_candidates.append(get_offspring(offspring_2_3_moves, 3, new_generation))
+    new_candidates.append(get_offspring(mutant_parent_1, 4, new_generation))
+    new_candidates.append(get_offspring(mutant_3_1_moves, 5, new_generation))
+    new_candidates.append(get_offspring(mutant_1_2_moves, 6, new_generation))
+
+    return new_candidates
+
+
 # new_moves = [ { "generation", "variant", "moves" }, .. ]
 def save_new_moves(new_moves, path_to_evolution):
     for new_move in new_moves:
@@ -177,6 +213,6 @@ generations_metada.update(sc.parse_generation_metadata(generation, path_to_evolu
 candidates = sc.get_best_candidates(generations_metada)
 
 # todo add params to specify that from cmd
-# new_moves = evolve(candidates, generation)
-new_moves = evolve_fixed_length(candidates, generation)
+new_moves = evolve(candidates, generation)
+# new_moves = evolve_fixed_length(candidates, generation)
 save_new_moves(new_moves, path_to_evolution)
