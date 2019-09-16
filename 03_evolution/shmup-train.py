@@ -8,9 +8,10 @@ import pygame
 import time
 import random
 from os import path
+import game_state as gstate
 
 
-img_dir = path.join(path.dirname(__file__), 'img')
+img_dir = path.join(path.dirname(__file__), '../img')
 
 WIDTH = 480
 HEIGHT = 600
@@ -41,6 +42,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
         self.speedx = 0
+
+    state_vector_size = 2
 
     def dump_state_vector(self):
         return [self.speedx, self.rect.centerx]
@@ -74,6 +77,8 @@ class Mob(pygame.sprite.Sprite):
         self.rect.y = random.randrange(-100, -40)
         self.speedy = random.randrange(1, 8)
         self.speedx = random.randrange(-3, 3)
+
+    state_vector_size = 3
 
     def dump_state_vector(self, player):
         player_x = player.rect.centerx
@@ -109,39 +114,29 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 
-def dump_as_vector(mobs, player, bullets, pygame, wasShooting):
-    state = []
+def detect_and_save_action(pygame, was_shooting, game_state):
+    action = 0
     keystate = pygame.key.get_pressed()
 
     # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
     # 4 - left + shoot, 5 - right + shoot
-    if wasShooting:
+    if was_shooting:
         if keystate[pygame.K_LEFT]:
-            state.append(4)
+            action = 4
         elif keystate[pygame.K_RIGHT]:
-            state.append(5)
+            action = 5
         else:
-            state.append(2)
+            action = 2
     elif keystate[pygame.K_LEFT]:  # print("key_pressed: K_LEFT")
-        state.append(0)
+        action = 0
     elif keystate[pygame.K_RIGHT]:  # print("key_pressed: K_RIGHT")
-        state.append(1)
+        action = 1
     elif keystate[pygame.K_SPACE]:  # print("key_pressed: K_SPACE")
-        state.append(2)
+        action = 2
     else:  # print("key_pressed: NONE")
-        state.append(3)
+        action = 3
 
-    state.extend(player.dump_state_vector())
-
-    for mob in mobs.sprites():
-        state.extend(mob.dump_state_vector(player))
-
-    # pad with empty mobs to have vector of the same size
-    mob_length = len(mobs.sprites())
-    for j in range(MOBS_SIZE - mob_length):
-        state.extend([0, 0, 0, 0])
-
-    print(','.join(map(str, state)))
+    game_state.save_action(action)
 
 
 # Load all game graphics
@@ -164,6 +159,7 @@ for i in range(MOBS_SIZE):
 # Game loop
 score = 0
 game_start_time = time.time()
+game_state = gstate.GameState(Player.state_vector_size, Mob.state_vector_size, MOBS_SIZE)
 
 running = True
 while running:
@@ -197,7 +193,8 @@ while running:
     if hits:
         running = False
 
-    dump_as_vector(mobs, player, bullets, pygame, wasShooting)
+    game_state.update_game_state(mobs, player, bullets)
+    detect_and_save_action(pygame, wasShooting, game_state)
 
     # Draw / render
     screen.fill(BLACK)
@@ -205,6 +202,7 @@ while running:
     all_sprites.draw(screen)
     # *after* drawing everything, flip the display
     pygame.display.flip()
+    game_state.print_state()
 
 end = time. time()
 # print("time: {} sec, score: {}".format(round(end - game_start_time), score))

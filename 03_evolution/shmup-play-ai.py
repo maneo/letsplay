@@ -2,25 +2,24 @@
 # Shmup game - part 4
 # Video link: https://www.youtube.com/watch?v=mOckdKp3V38
 # Adding graphics
+import pickle
 from math import sqrt
 
 # uncomment this to play headless
 # import os
 # os.environ['SDL_VIDEODRIVER'] = 'dummy'
-
+import numpy as np
 import pygame
 import random
 from os import path
 import time
-import sys
-import score_utils as sc
+import game_state as gstate
 
 img_dir = path.join(path.dirname(__file__), '../img')
-generation = sys.argv[2]
 
 WIDTH = 480
 HEIGHT = 600
-FPS = 240
+FPS = 30
 MOBS_SIZE = 8
 
 # define colors
@@ -39,93 +38,6 @@ pygame.display.set_caption("Shmup!")
 clock = pygame.time.Clock()
 
 
-# todo used shared class
-# 3,0,113,532,1,5,361,2,4,269,2,5,520,2,2,224,1,6,491,0,3,433,-2,2,516,2,5
-class GameState:
-    memory_length = 4
-
-    def __init__(self):
-        self.states = list()
-
-    def __save_state(self, last_game_state):
-        if len(self.states) == GameState.memory_length:
-            self.states.pop(0)
-        self.states.append(last_game_state)
-        # print(str(self.states))
-
-    def dump_state(self):
-        game_state_vector = list()
-        if len(self.states) < GameState.memory_length:
-            # for first frames append with zeros
-            missing_states = GameState.memory_length - len(self.states)
-            game_state_length = len(self.states[0])
-            for i in range(0, missing_states * game_state_length):
-                game_state_vector.append(0)
-
-        for state in self.states:
-            game_state_vector.extend(state)
-
-        return game_state_vector
-
-    def update_game(self, mobs, player, bullets, action, score):
-        state = list()
-        state.extend(player.dump_state_vector())
-
-        mob_vector_size = 3
-        for mob in mobs.sprites():
-            mob_vec = mob.dump_state_vector(player)
-            state.extend(mob_vec)
-            mob_vector_size = len(mob_vec)
-
-        # pad with empty mobs to have vector of the same size
-        mob_length = len(mobs.sprites())
-        for j in range((MOBS_SIZE - mob_length) * mob_vector_size):
-            state.append(0)
-
-        state.append(action)
-        self.__save_state(state)
-
-
-class MovesSequence:
-    # default_move = 2   # if doubt shoot!
-    default_move = 3
-
-    def __init__(self, generation, path_to_evolution):
-        self.path_to_evolution = path_to_evolution
-        file_with_seq = self.path_to_evolution + "gen_" + str(generation) + ".seq"
-        with open(file_with_seq, 'r') as seq_file:
-            self.moves = seq_file.readlines()
-        self.current_move_idx = 0
-        self.generation = generation
-        self.seq_is_over = False
-        self.done_moves = []
-
-    def next(self):
-        if self.current_move_idx < (len(self.moves) - 1):
-            current_action = int(self.moves[self.current_move_idx])
-            self.done_moves.append(current_action)
-            self.current_move_idx = self.current_move_idx + 1
-            return current_action
-        else:
-            # give some time to bullets to reach target
-            how_far_beyond = self.current_move_idx - len(self.moves)
-            if how_far_beyond > 100:
-                self.seq_is_over = True
-
-            current_action = MovesSequence.default_move
-            self.done_moves.append(current_action)
-            self.current_move_idx = self.current_move_idx + 1
-            return current_action
-
-    def save_done_moves(self, score, time):
-        file_with_seq = self.path_to_evolution + "gen_" \
-                        + str(generation) + "_dead_s_" + str(int(score)) \
-                        + "_t_" + str(int(time)) + ".seq"
-        with open(file_with_seq, 'w') as seq_file:
-            for move in self.done_moves:
-                seq_file.write(str(move) + "\n")
-
-
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -135,6 +47,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.centerx = WIDTH / 2
         self.rect.bottom = HEIGHT - 10
         self.speedx = 0
+
+    state_vector_size = 2
 
     def dump_state_vector(self):
         return [self.speedx, self.rect.centerx]
@@ -168,6 +82,8 @@ class Mob(pygame.sprite.Sprite):
         self.speedy = random.randrange(1, 8)
         self.speedx = random.randrange(-3, 3)
 
+    state_vector_size = 3
+
     def dump_state_vector(self, player):
         player_x = player.rect.centerx
         player_y = player.rect.bottom
@@ -194,6 +110,8 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.centerx = x
         self.speedy = -10
 
+    state_vector_size = 2
+
     def dump_state_vector(self):
         return [self.rect.centerx, self.speedy]
 
@@ -203,6 +121,19 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.bottom < 0:
             self.kill()
 
+
+class AI:
+    def __init__(self, ai_model):
+        self.ai_model = ai_model
+
+    def next_move(self, game_state_vector):
+        prediction =  self.ai_model.predict(np.array(game_state_vector).reshape(1, -1))
+        return prediction[0]
+        # return random.randint(0, 5)
+
+
+ai_model_pkl = pickle.load(open("ai_model_mlp.pkl", "rb"))
+ai_agent = AI(ai_model_pkl)
 
 # Load all game graphics
 background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
@@ -224,8 +155,7 @@ for i in range(MOBS_SIZE):
 game_start_time = time.time()
 score = 0
 
-ai_model = MovesSequence(generation, sc.path_to_evolution())
-game_state = GameState()
+game_state = gstate.GameState(Player.state_vector_size, Mob.state_vector_size, MOBS_SIZE)
 
 # Game loop
 running = True
@@ -234,7 +164,11 @@ while running:
     clock.tick(FPS)
     wasShooting = False
 
-    action = ai_model.next()
+    game_state.update_game_state(mobs, player, bullets)
+
+    action = ai_agent.next_move(game_state.dump_state())
+
+    game_state.save_action(action)
 
     # Process input (events)
     for event in pygame.event.get():
@@ -264,8 +198,8 @@ while running:
     if hits:
         running = False
 
-    game_state.update_game(mobs, player, bullets, action, score)
-    print(','.join(map(str, game_state.dump_state())))
+    # game_state.update_game(mobs, player, bullets, action, score)
+    # print(','.join(map(str, game_state.dump_state())))
 
     # Draw / render
     screen.fill(BLACK)
@@ -273,13 +207,9 @@ while running:
     all_sprites.draw(screen)
     # *after* drawing everything, flip the display
     pygame.display.flip()
-    if ai_model.seq_is_over:
-        # when end of seq is reached terminate game
-        break
 
 
 end = time.time()
 
 print("time: {} sec, score: {}".format(round(end - game_start_time), score))
-ai_model.save_done_moves(score, round(end - game_start_time))
 pygame.quit()
