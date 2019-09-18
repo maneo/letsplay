@@ -94,6 +94,26 @@ def mutate(offspring_moves, how_many_mutations):
     return mutant_moves
 
 
+def mutate_seq(offspring_moves, how_many_mutations):
+    variants_and_moves = [
+                           ["0", "4", "0", "4", "0", "4"],
+                           ["1", "5", "1", "5", "1", "5"],
+                           ["4", "4", "4", "4", "4", "4"],
+                           ["5", "5", "5", "5", "5", "5"],
+                           random_moves(6),
+                          ]
+
+    mutant_moves = offspring_moves.copy()
+
+    mutation_moves_seq = variants_and_moves[random.randint(0, 3)]
+
+    for i in range(0, how_many_mutations):
+        mutation_idx = random.randint(0, len(offspring_moves) - 7)
+        for j in range(0, 5):
+            mutant_moves[mutation_idx + j] = mutation_moves_seq[j]
+
+    return mutant_moves
+
 # candidate { "seq_file", "generation", "variant", "score", "time" }
 # possible moves
 # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
@@ -222,6 +242,37 @@ def evolve_fixed_length_kormoran(candidates, generation):
     return new_candidates
 
 
+# less mutations, less mutations
+def evolve_fixed_length_kaczka(candidates, generation):
+    best_parent1 = candidates[0]
+    best_parent1_moves = load_moves(best_parent1["seq_file"])
+
+    best_parent2 = candidates[1]
+    best_parent2_moves = load_moves(best_parent2["seq_file"])
+
+    best_parent3 = candidates[2]
+    best_parent3_moves = load_moves(best_parent3["seq_file"])
+
+    offspring_1_2_moves = crossover(best_parent1_moves, best_parent2_moves)
+    offspring_3_1_moves = crossover(best_parent3_moves, best_parent1_moves)
+    offspring_2_3_moves = crossover(best_parent2_moves, best_parent3_moves)
+    mutant_parent_1 = mutate_seq(best_parent1_moves, random.randint(1, 10))
+    mutant_3_1_moves = mutate_seq(offspring_3_1_moves, random.randint(1, 10))
+    mutant_1_2_moves = mutate_seq(offspring_1_2_moves, random.randint(1, 10))
+
+    new_generation = int(generation) + 1
+    new_candidates = list()
+
+    new_candidates.append(get_offspring(offspring_1_2_moves, 1, new_generation))
+    new_candidates.append(get_offspring(offspring_3_1_moves, 2, new_generation))
+    new_candidates.append(get_offspring(offspring_2_3_moves, 3, new_generation))
+    new_candidates.append(get_offspring(mutant_parent_1, 4, new_generation))
+    new_candidates.append(get_offspring(mutant_3_1_moves, 5, new_generation))
+    new_candidates.append(get_offspring(mutant_1_2_moves, 6, new_generation))
+
+    return new_candidates
+
+
 # new_moves = [ { "generation", "variant", "moves" }, .. ]
 def save_new_moves(new_moves, path_to_evolution):
     for new_move in new_moves:
@@ -245,5 +296,5 @@ candidates = sc.get_best_candidates(generations_metada)
 
 # todo add params to specify that from cmd
 # new_moves = evolve(candidates, generation)
-new_moves = evolve_fixed_length_kormoran(candidates, generation)
+new_moves = evolve_fixed_length_kaczka(candidates, generation)
 save_new_moves(new_moves, path_to_evolution)
