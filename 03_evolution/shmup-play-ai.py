@@ -13,7 +13,9 @@ import pygame
 import random
 from os import path
 import time
-import game_state as gstate
+import game_utils as game
+
+ai_model_pkl = pickle.load(open("models/2_frames/ai_model_xgb.pkl", "rb"))
 
 img_dir = path.join(path.dirname(__file__), '../img')
 
@@ -29,6 +31,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
+
 
 # initialize pygame and create window
 pygame.init()
@@ -132,7 +135,6 @@ class AI:
         # return random.randint(0, 5)
 
 
-ai_model_pkl = pickle.load(open("ai_model_mlp.pkl", "rb"))
 ai_agent = AI(ai_model_pkl)
 
 # Load all game graphics
@@ -155,14 +157,14 @@ for i in range(MOBS_SIZE):
 game_start_time = time.time()
 score = 0
 
-game_state = gstate.GameState(Player.state_vector_size, Mob.state_vector_size, MOBS_SIZE)
+game_state = game.GameState(Player.state_vector_size, Mob.state_vector_size, MOBS_SIZE)
 
 # Game loop
 running = True
 while running:
     # keep loop running at the right speed
     clock.tick(FPS)
-    wasShooting = False
+    was_shooting = False
 
     game_state.update_game_state(mobs, player, bullets)
 
@@ -178,7 +180,7 @@ while running:
 
     if action == 2 or action == 4 or action == 5:
         player.shoot()
-        wasShooting = True
+        was_shooting = True
     else:
         player.update_with_action(action)
 

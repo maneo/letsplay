@@ -8,8 +8,7 @@ import pygame
 import time
 import random
 from os import path
-import game_state as gstate
-
+import game_utils as game
 
 img_dir = path.join(path.dirname(__file__), '../img')
 
@@ -32,6 +31,7 @@ pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Shmup!")
 clock = pygame.time.Clock()
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -93,6 +93,7 @@ class Mob(pygame.sprite.Sprite):
             self.rect.x = random.randrange(WIDTH - self.rect.width)
             self.rect.y = random.randrange(-100, -40)
             self.speedy = random.randrange(1, 8)
+
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -159,13 +160,14 @@ for i in range(MOBS_SIZE):
 # Game loop
 score = 0
 game_start_time = time.time()
-game_state = gstate.GameState(Player.state_vector_size, Mob.state_vector_size, MOBS_SIZE)
+game_state = game.GameState(Player.state_vector_size, Mob.state_vector_size, MOBS_SIZE)
 
 running = True
 while running:
     # keep loop running at the right speed
     clock.tick(FPS)
-    wasShooting = False
+    was_scored = False
+    was_shooting = False
 
     # Process input (events)
     for event in pygame.event.get():
@@ -175,7 +177,7 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 player.shoot()
-                wasShooting = True
+                was_shooting = True
 
     # Update
     all_sprites.update()
@@ -187,6 +189,7 @@ while running:
         all_sprites.add(m)
         mobs.add(m)
         score += 1
+        was_scored = True
 
     # check to see if a mob hit the player
     hits = pygame.sprite.spritecollide(player, mobs, False)
@@ -194,7 +197,7 @@ while running:
         running = False
 
     game_state.update_game_state(mobs, player, bullets)
-    detect_and_save_action(pygame, wasShooting, game_state)
+    detect_and_save_action(pygame, was_shooting, game_state)
 
     # Draw / render
     screen.fill(BLACK)
