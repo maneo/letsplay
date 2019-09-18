@@ -49,7 +49,7 @@ def new_moves_generator_smok(moves_to_extend, variant):
                            random_moves(6),
                            random_moves(6)
                           ]
-    random_variant = random_move()
+    random_variant = random.randint(0, len(variants_and_moves) - 1)
     moves_to_extend.extend(variants_and_moves[random_variant])
     return moves_to_extend
 
