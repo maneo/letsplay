@@ -30,10 +30,11 @@ class MovesSequence:
             self.current_move_idx = self.current_move_idx + 1
             return current_action
 
-    def save_done_moves(self, score, time, generation):
+    def save_done_moves(self, score, time, generation, survived):
         file_with_seq = self.path_to_evolution + "gen_" \
                         + str(generation) + "_dead_s_" + str(int(score)) \
-                        + "_t_" + str(int(time)) + ".seq"
+                        + "_t_" + str(int(time)) + "_alive_" \
+                        + str(int(survived)) + ".seq"
         with open(file_with_seq, 'w') as seq_file:
             for move in self.done_moves:
                 seq_file.write(str(move) + "\n")
@@ -44,10 +45,10 @@ class GameState:
 
     def __init__(self, player_vector_size, mob_vector_size, mob_size):
         self.states = list()
-        self.player_vector_size = player_vector_size
-        self.mob_vector_size = mob_vector_size
+        self.player_vector_size = 1 #player_vector_size
+        self.mob_vector_size = 4 #mob_vector_size
         self.mob_size = mob_size
-        additional_features = 1 + 1 + 3 + 1
+        additional_features = 0
         self.state_length = self.player_vector_size + self.mob_size * self.mob_vector_size + additional_features
 
     def __save_game_state(self, current_game_state):
@@ -76,39 +77,35 @@ class GameState:
     def print_state(self):
         print(','.join(map(str, self.dump_state())))
 
-    def update_game_state(self, mobs, player, bullets):
+    def update_game_state(self, mobs, player, bullets, frame_count):
         state = list()
-        state.extend(player.dump_state_vector())
+        # state.extend(player.dump_state_vector()[0])
+        state.append(player.dump_state_vector()[1])
 
         count_mobs_on_left = 0
-        count_mobs_on_right = 0
-        count_mobs_too_close = 0
 
-        mob_vector_size = self.mob_vector_size
+        mob_vector_size = 4
         for mob in mobs.sprites():
             mob_state = mob.dump_state(player)
 
             if mob_state['dist_x'] > 0:
                 count_mobs_on_left = count_mobs_on_left + 1
-            else:
-                count_mobs_on_right = count_mobs_on_right + 1
 
-            if mob_state['dist_y'] < 20:
-                count_mobs_too_close = count_mobs_too_close + 1
+            state.append(mob_state['dist_x'])
+            state.append(mob_state['dist_y'])
+            state.append(mob_state['speedy'])
+            state.append(mob_state['speedx'])
 
-            mob_vec = mob_state.values()
-            state.extend(mob_vec)
+            # mob_vec = mob_state.values()
+            # state.extend(mob_vec)
 
         # pad with empty mobs to have vector of the same size
         mob_length = len(mobs.sprites())
         for j in range((self.mob_size - mob_length) * mob_vector_size):
             state.append(0)
 
-        state.append(count_mobs_on_right)
-        state.append(count_mobs_on_left)
-        state.append(count_mobs_too_close)
-
-        state.append(len(bullets))
+        # state.append(frame_count % 200)
+        # state.append(len(bullets))
 
         # todo add previous action
 

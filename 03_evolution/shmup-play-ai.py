@@ -143,6 +143,7 @@ class AI:
         self.ai_model = ai_model
 
     def next_move(self, game_state_vector):
+        print(game_state_vector)
         prediction =  self.ai_model.predict(np.array(game_state_vector).reshape(1, -1))
         print(prediction)
         return prediction[0]
@@ -170,6 +171,7 @@ for i in range(MOBS_SIZE):
 
 game_start_time = time.time()
 score = 0
+frame_count = 0
 
 game_state = game.GameState(Player.state_vector_size, Mob.state_vector_size, MOBS_SIZE)
 
@@ -180,7 +182,7 @@ while running:
     clock.tick(FPS)
     was_shooting = False
 
-    game_state.update_game_state(mobs, player, bullets)
+    game_state.update_game_state(mobs, player, bullets, frame_count)
 
     action = ai_agent.next_move(game_state.dump_state())
 
@@ -223,6 +225,7 @@ while running:
     all_sprites.draw(screen)
     # *after* drawing everything, flip the display
     pygame.display.flip()
+    frame_count = frame_count + 1
 
 
 end = time.time()

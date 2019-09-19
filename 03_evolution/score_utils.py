@@ -4,7 +4,7 @@ import sys
 
 
 def parse_score(file_name):
-    regexp = "gen\_(\d+)\_(\d+)\_dead_s_(\d+)_t_(\d+)\.seq"
+    regexp = "gen\_(\d+)\_(\d+)\_dead_s_(\d+)_t_(\d+)_alive_(\d)\.seq"
     metadata_match = re.search(regexp, file_name, re.IGNORECASE)
 
     if metadata_match:

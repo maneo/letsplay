@@ -14,7 +14,7 @@ img_dir = path.join(path.dirname(__file__), '../img')
 
 WIDTH = 480
 HEIGHT = 600
-FPS = 24
+FPS = 30
 MOBS_SIZE = 8
 
 # define colors
@@ -118,6 +118,8 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.centerx = x
         self.speedy = -10
 
+    state_vector_size = 2
+
     def dump_state_vector(self):
         return [self.rect.centerx, self.speedy]
 
@@ -209,7 +211,7 @@ while running:
     if hits:
         running = False
 
-    game_state.update_game_state(mobs, player, bullets)
+    game_state.update_game_state(mobs, player, bullets, frame_count)
     detect_and_save_action(pygame, was_shooting, game_state)
 
     # Draw / render
@@ -218,10 +220,10 @@ while running:
     all_sprites.draw(screen)
     # *after* drawing everything, flip the display
     pygame.display.flip()
-    game_state.print_state()
+    # game_state.print_state()
     frame_count = frame_count + 1
 
-end = time. time()
+end = time.time()
 # print("time: {} sec, score: {}".format(round(end - game_start_time), score))
 
 pygame.quit()
