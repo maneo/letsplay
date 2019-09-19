@@ -5,8 +5,8 @@
 from math import sqrt
 
 # uncomment this to play headless
-# import os
-# os.environ['SDL_VIDEODRIVER'] = 'dummy'
+import os
+os.environ['SDL_VIDEODRIVER'] = 'dummy'
 
 import pygame
 import random
@@ -21,7 +21,7 @@ generation = sys.argv[2]
 
 WIDTH = 480
 HEIGHT = 600
-FPS = 240
+FPS = 2400
 MOBS_SIZE = 8
 
 # define colors
@@ -84,14 +84,26 @@ class Mob(pygame.sprite.Sprite):
         self.speedy = random.randrange(1, 8)
         self.speedx = random.randrange(-3, 3)
 
-    state_vector_size = 3
+    state_vector_size = 7
 
-    def dump_state_vector(self, player):
+    def dump_state(self, player) -> dict:
+        state = dict()
         player_x = player.rect.centerx
         player_y = player.rect.bottom
-        distance = round(sqrt((player_x - self.rect.x) * (player_x - self.rect.x)
-                              + (player_y - self.rect.y) * (player_y - self.rect.y)))
-        return [distance, self.speedx, self.speedy]
+        mob_x = self.rect.x
+        mob_y = self.rect.y
+
+        state["speedx"] = self.speedx
+        state["speedy"] = self.speedy
+        state["distance"] = round(sqrt((player_x - mob_x) * (player_x - mob_x)
+                              + (player_y - mob_y) * (player_y - mob_y)))
+        state["dist_x"] = player_x - mob_x
+        state["dist_y"] = player_y - mob_y
+
+        state['mob_x'] = mob_x
+        state['mob_y'] = mob_y
+
+        return state
 
     def update(self):
         self.rect.x += self.speedx
@@ -143,9 +155,12 @@ for i in range(MOBS_SIZE):
 
 game_start_time = time.time()
 score = 0
+frame_count = 0
 
 ai_model = game.MovesSequence(generation, sc.path_to_evolution())
-game_state = game.GameState(Player.state_vector_size, Mob.state_vector_size, MOBS_SIZE)
+game_state = game.GameState(Player.state_vector_size,
+                            Mob.state_vector_size,
+                            MOBS_SIZE)
 
 # Game loop
 running = True
@@ -184,7 +199,7 @@ while running:
     if hits:
         running = False
 
-    game_state.update_game_state(mobs, player, bullets)
+    game_state.update_game_state(mobs, player, bullets, frame_count)
     game_state.save_action(action)
     game_state.print_state()
 
@@ -194,6 +209,7 @@ while running:
     all_sprites.draw(screen)
     # *after* drawing everything, flip the display
     pygame.display.flip()
+    frame_count = frame_count + 1
     if ai_model.seq_is_over:
         # when end of seq is reached terminate game
         break
@@ -201,6 +217,6 @@ while running:
 
 end = time.time()
 
-print("time: {} sec, score: {}".format(round(end - game_start_time), score))
-ai_model.save_done_moves(score, round(end - game_start_time), generation)
+print("time: {} sec, score: {}, survived: {}".format(round(end - game_start_time), score, running))
+# ai_model.save_done_moves(score, round(end - game_start_time), generation, running)
 pygame.quit()

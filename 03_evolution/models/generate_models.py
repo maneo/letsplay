@@ -92,7 +92,8 @@ def rebuild_models(variants):
         y_train_all = df["action"]
         x_train_all = df.drop(columns="action")
 
-        models = [RandomForest(), LogisticModel(), MLP(), XGB()]
+        # models = [RandomForest(), LogisticModel(), MLP(), XGB()]
+        models = [MLP(), XGB()]
 
         for model in models:
             print("{} training started ".format(model.name))
@@ -101,8 +102,14 @@ def rebuild_models(variants):
             print("model: {} - done ".format(model.name))
 
 
-variants = [ModelVariant("4_frames/", 108, "train_human.csv"),
-            ModelVariant("2_frames/", 54, "train_human.csv"),
-            ModelVariant("1_frame/", 27, "train_human.csv")]
+# variants = [ModelVariant("4_frames/", 108, "train_human.csv"),
+#             ModelVariant("2_frames/", 54, "train_human.csv"),
+#             ModelVariant("1_frame/", 27, "train_human.csv")]
+
+variants = [ModelVariant("1_frame/", 27, "train_evo.csv")]
+
+# variants = [ModelVariant("1_frame/", 27, "train_evo.csv")]
+#
+# variants = [ModelVariant("1_frame/", 27, "train_human.csv")]
 
 rebuild_models(variants)
