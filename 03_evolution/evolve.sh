@@ -29,7 +29,7 @@ function run_variant_parallel() {
 
 }
 
-while [[ ${iteration_without_improvement} -le 1 ]] || [[ ${generation} -le 1 ]]
+while [[ ${iteration_without_improvement} -le 15 ]] || [[ ${generation} -le 20 ]]
 do
   variant="${generation}_1"
   run_variant_parallel
@@ -39,6 +39,8 @@ do
 
   variant="${generation}_3"
   run_variant_parallel
+
+  wait
 
   variant="${generation}_4"
   run_variant_parallel
@@ -62,7 +64,7 @@ do
 
   echo "${generation},${max_score},${current_score}" >> "${base_dir_name}/progress.log"
 
-  if [[ ${gradient} -lt 0 ]]
+  if [[ ${gradient} -le 0 ]]
   then
     ((iteration_without_improvement++))
   else
@@ -72,5 +74,9 @@ do
 
   echo "iterations without improvement: ${iteration_without_improvement}"
 
+  echo "66c80479-87ff-404f-b80b-3fc6cfe68fc9.letsplay.${experiment_name}.current_score ${current_score}" | nc b048fbda.carbon.hostedgraphite.com 2003
+  echo "66c80479-87ff-404f-b80b-3fc6cfe68fc9.letsplay.${experiment_name}.max_score ${max_score}" | nc b048fbda.carbon.hostedgraphite.com 2003
+
   ((generation++))
+
 done
