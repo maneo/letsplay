@@ -18,7 +18,6 @@ def load_moves(file_name):
 
 # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
 # 4 - left + shoot, 5 - right + shoot
-
 def new_moves_generator(moves_to_extend, variant):
     variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5, "6": 3}
     moves_to_extend.append(str(variants_and_moves[variant]))
@@ -46,9 +45,9 @@ def new_moves_generator_smok(moves_to_extend, variant):
                            ["1", "5", "1", "5", "1", "5"],
                            ["4", "4", "4", "4", "4", "4"],
                            ["5", "5", "5", "5", "5", "5"],
-                           random_moves(6),
-                           random_moves(6)
-                          ]
+                           ["0", "4", "0", "0", "4", "0"],
+                           ["0", "2", "0", "2", "1", "1"],
+    ]
     random_variant = random.randint(0, len(variants_and_moves) - 1)
     moves_to_extend.extend(variants_and_moves[random_variant])
     return moves_to_extend
@@ -114,6 +113,7 @@ def mutate_seq(offspring_moves, how_many_mutations):
 
     return mutant_moves
 
+
 # candidate { "seq_file", "generation", "variant", "score", "time" }
 # possible moves
 # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
@@ -136,7 +136,73 @@ def evolve(candidates, generation):
 
     for i in range(0, len(variants_and_moves) - 1):
         moves_to_mutate = next_generation[i]["moves"]
-        how_many_mutation = round(len(moves_to_mutate) / 10)
+        how_many_mutation = round(len(moves_to_mutate) / 100)
+        next_generation[i]["moves"] = mutate(moves_to_mutate, how_many_mutation)
+
+    return next_generation
+
+
+def evolve_sokol(candidates, generation):
+    parent_1 = candidates[0]
+    parent_1_moves = load_moves(parent_1["seq_file"])
+
+    parent_2 = candidates[1]
+    parent_2_moves = load_moves(parent_2["seq_file"])
+
+    parent_3 = candidates[2]
+    parent_3_moves = load_moves(parent_3["seq_file"])
+
+    next_generation = list()
+    new_generation = int(generation) + 1
+
+    v = "1"
+    new_candidate = dict()
+    new_candidate["generation"] = new_generation
+    new_candidate["variant"] = v
+    cross = crossover(parent_1_moves, parent_2_moves)
+    new_candidate["moves"] = new_moves_generator_smok(cross, v)
+    next_generation.append(new_candidate)
+
+    v = "2"
+    new_candidate = dict()
+    new_candidate["generation"] = new_generation
+    new_candidate["variant"] = v
+    cross = crossover(parent_1_moves, parent_3_moves)
+    new_candidate["moves"] = new_moves_generator_smok(cross, v)
+    next_generation.append(new_candidate)
+
+    v = "3"
+    new_candidate = dict()
+    new_candidate["generation"] = new_generation
+    new_candidate["variant"] = v
+    cross = crossover(parent_2_moves, parent_3_moves)
+    new_candidate["moves"] = new_moves_generator_smok(cross, v)
+    next_generation.append(new_candidate)
+
+    v = "4"
+    new_candidate = dict()
+    new_candidate["generation"] = new_generation
+    new_candidate["variant"] = v
+    new_candidate["moves"] = new_moves_generator_smok(parent_1_moves.copy(), v)
+    next_generation.append(new_candidate)
+
+    v = "5"
+    new_candidate = dict()
+    new_candidate["generation"] = new_generation
+    new_candidate["variant"] = v
+    new_candidate["moves"] = new_moves_generator_smok(parent_1_moves.copy(), v)
+    next_generation.append(new_candidate)
+
+    v = "6"
+    new_candidate = dict()
+    new_candidate["generation"] = new_generation
+    new_candidate["variant"] = v
+    new_candidate["moves"] = new_moves_generator_smok(parent_2_moves.copy(), v)
+    next_generation.append(new_candidate)
+
+    for i in range(0, len(next_generation) - 1):
+        moves_to_mutate = next_generation[i]["moves"]
+        how_many_mutation = round(len(moves_to_mutate) / 100)
         next_generation[i]["moves"] = mutate(moves_to_mutate, how_many_mutation)
 
     return next_generation
@@ -295,6 +361,6 @@ generations_metada.update(sc.parse_generation_metadata(generation, path_to_evolu
 candidates = sc.get_best_candidates(generations_metada)
 
 # todo add params to specify that from cmd
-# new_moves = evolve(candidates, generation)
-new_moves = evolve_fixed_length_kaczka(candidates, generation)
+new_moves = evolve_sokol(candidates, generation)
+# new_moves = evolve_fixed_length_kaczka(candidates, generation)
 save_new_moves(new_moves, path_to_evolution)

@@ -218,5 +218,5 @@ while running:
 end = time.time()
 
 print("time: {} sec, score: {}, survived: {}".format(round(end - game_start_time), score, running))
-# ai_model.save_done_moves(score, round(end - game_start_time), generation, running)
+ai_model.save_done_moves(score, round(end - game_start_time), generation, running)
 pygame.quit()

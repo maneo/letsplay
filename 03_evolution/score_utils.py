@@ -9,9 +9,10 @@ def parse_score(file_name):
 
     if metadata_match:
         return metadata_match.group(1), metadata_match.group(2), \
-               metadata_match.group(3), metadata_match.group(4)
+               metadata_match.group(3), metadata_match.group(4), \
+               metadata_match.group(5)
 
-    return 0, 0, 0, 0
+    return 0, 0, 0, 0, 0
 
 
 def parse_generation_metadata(generation, path_to_evolution):
@@ -25,7 +26,7 @@ def parse_generation_metadata(generation, path_to_evolution):
                 files.append(os.path.join(r, file))
                 data = dict()
                 data['dead_seq_file'] = os.path.join(r, file)
-                data['generation'], data['variant'], data['score'], data['time'],  = parse_score(file)
+                data['generation'], data['variant'], data['score'], data['time'], data['survived'] = parse_score(file)
                 seq_file_name = "gen_" + str(data['generation']) + "_" + str(data['variant']) + ".seq"
                 data['seq_file'] = os.path.join(r, seq_file_name)
                 generation_data[data['variant']].append(data)
@@ -34,9 +35,12 @@ def parse_generation_metadata(generation, path_to_evolution):
 
 def calc_avg(variant_evaluations, best_by_field):
     summary = 0
+    survivors = 0
     for evaluation in variant_evaluations:
         summary = summary + int(evaluation[best_by_field])
-    return round(summary / len(variant_evaluations))
+        if evaluation['survived'] == "1":
+            survivors = survivors + 1
+    return round(summary / len(variant_evaluations)) + survivors
 
 
 def get_best_candidates(generations_metadata):

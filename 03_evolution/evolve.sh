@@ -29,7 +29,7 @@ function run_variant_parallel() {
 
 }
 
-while [[ ${iteration_without_improvement} -le 2 ]] || [[ ${generation} -le 2 ]]
+while [[ ${iteration_without_improvement} -le 1 ]] || [[ ${generation} -le 1 ]]
 do
   variant="${generation}_1"
   run_variant_parallel
