@@ -47,7 +47,8 @@ class GameState:
         self.player_vector_size = player_vector_size
         self.mob_vector_size = mob_vector_size
         self.mob_size = mob_size
-        self.state_length = self.player_vector_size + self.mob_size * self.mob_vector_size + 1
+        additional_features = 1 + 1 + 3 + 1
+        self.state_length = self.player_vector_size + self.mob_size * self.mob_vector_size + additional_features
 
     def __save_game_state(self, current_game_state):
         if len(self.states) == GameState.frames_to_remember:
@@ -79,15 +80,37 @@ class GameState:
         state = list()
         state.extend(player.dump_state_vector())
 
+        count_mobs_on_left = 0
+        count_mobs_on_right = 0
+        count_mobs_too_close = 0
+
         mob_vector_size = self.mob_vector_size
         for mob in mobs.sprites():
-            mob_vec = mob.dump_state_vector(player)
+            mob_state = mob.dump_state(player)
+
+            if mob_state['dist_x'] > 0:
+                count_mobs_on_left = count_mobs_on_left + 1
+            else:
+                count_mobs_on_right = count_mobs_on_right + 1
+
+            if mob_state['dist_y'] < 20:
+                count_mobs_too_close = count_mobs_too_close + 1
+
+            mob_vec = mob_state.values()
             state.extend(mob_vec)
 
         # pad with empty mobs to have vector of the same size
         mob_length = len(mobs.sprites())
         for j in range((self.mob_size - mob_length) * mob_vector_size):
             state.append(0)
+
+        state.append(count_mobs_on_right)
+        state.append(count_mobs_on_left)
+        state.append(count_mobs_too_close)
+
+        state.append(len(bullets))
+
+        # todo add previous action
 
         self.__save_game_state(state)
 

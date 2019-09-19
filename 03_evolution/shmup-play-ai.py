@@ -15,7 +15,8 @@ from os import path
 import time
 import game_utils as game
 
-ai_model_pkl = pickle.load(open("models/2_frames/ai_model_xgb.pkl", "rb"))
+# ai_model_pkl = pickle.load(open("models/1_frame/ai_model_mlp.pkl", "rb"))
+ai_model_pkl = pickle.load(open("ai_model_xgb.pkl", "rb"))
 
 img_dir = path.join(path.dirname(__file__), '../img')
 
@@ -85,14 +86,26 @@ class Mob(pygame.sprite.Sprite):
         self.speedy = random.randrange(1, 8)
         self.speedx = random.randrange(-3, 3)
 
-    state_vector_size = 3
+    state_vector_size = 7
 
-    def dump_state_vector(self, player):
+    def dump_state(self, player) -> dict:
+        state = dict()
         player_x = player.rect.centerx
-        player_y = player.rect.bottom
-        distance = round(sqrt((player_x - self.rect.x) * (player_x - self.rect.x)
-                              + (player_y - self.rect.y) * (player_y - self.rect.y)))
-        return [distance, self.speedx, self.speedy]
+        player_y = player.rect.centery
+        mob_x = self.rect.centerx
+        mob_y = self.rect.centery
+
+        state["speedx"] = self.speedx
+        state["speedy"] = self.speedy
+        state["distance"] = round(sqrt((player_x - mob_x) * (player_x - mob_x)
+                              + (player_y - mob_y) * (player_y - mob_y)))
+        state["dist_x"] = player_x - mob_x
+        state["dist_y"] = player_y - mob_y
+
+        state['mob_x'] = mob_x
+        state['mob_y'] = mob_y
+
+        return state
 
     def update(self):
         self.rect.x += self.speedx
@@ -131,6 +144,7 @@ class AI:
 
     def next_move(self, game_state_vector):
         prediction =  self.ai_model.predict(np.array(game_state_vector).reshape(1, -1))
+        print(prediction)
         return prediction[0]
         # return random.randint(0, 5)
 

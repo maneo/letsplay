@@ -14,7 +14,7 @@ img_dir = path.join(path.dirname(__file__), '../img')
 
 WIDTH = 480
 HEIGHT = 600
-FPS = 60
+FPS = 24
 MOBS_SIZE = 8
 
 # define colors
@@ -78,13 +78,26 @@ class Mob(pygame.sprite.Sprite):
         self.speedy = random.randrange(1, 8)
         self.speedx = random.randrange(-3, 3)
 
-    state_vector_size = 3
+    state_vector_size = 7
 
-    def dump_state_vector(self, player):
+    def dump_state(self, player) -> dict:
+        state = dict()
         player_x = player.rect.centerx
-        player_y = player.rect.bottom
-        distance = round(sqrt((player_x - self.rect.x) * (player_x - self.rect.x) + (player_y-self.rect.y) * (player_y-self.rect.y)))
-        return [distance, self.speedx, self.speedy]
+        player_y = player.rect.centery
+        mob_x = self.rect.centerx
+        mob_y = self.rect.centery
+
+        state["speedx"] = self.speedx
+        state["speedy"] = self.speedy
+        state["distance"] = round(sqrt((player_x - mob_x) * (player_x - mob_x)
+                              + (player_y - mob_y) * (player_y - mob_y)))
+        state["dist_x"] = player_x - mob_x
+        state["dist_y"] = player_y - mob_y
+
+        state['mob_x'] = mob_x
+        state['mob_y'] = mob_y
+
+        return state
 
     def update(self):
         self.rect.x += self.speedx
@@ -159,6 +172,7 @@ for i in range(MOBS_SIZE):
 
 # Game loop
 score = 0
+frame_count = 0
 game_start_time = time.time()
 game_state = game.GameState(Player.state_vector_size, Mob.state_vector_size, MOBS_SIZE)
 
@@ -166,7 +180,6 @@ running = True
 while running:
     # keep loop running at the right speed
     clock.tick(FPS)
-    was_scored = False
     was_shooting = False
 
     # Process input (events)
@@ -206,6 +219,7 @@ while running:
     # *after* drawing everything, flip the display
     pygame.display.flip()
     game_state.print_state()
+    frame_count = frame_count + 1
 
 end = time. time()
 # print("time: {} sec, score: {}".format(round(end - game_start_time), score))

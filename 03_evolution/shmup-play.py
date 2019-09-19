@@ -84,14 +84,26 @@ class Mob(pygame.sprite.Sprite):
         self.speedy = random.randrange(1, 8)
         self.speedx = random.randrange(-3, 3)
 
-    state_vector_size = 3
+    state_vector_size = 7
 
-    def dump_state_vector(self, player):
+    def dump_state(self, player) -> dict:
+        state = dict()
         player_x = player.rect.centerx
         player_y = player.rect.bottom
-        distance = round(sqrt((player_x - self.rect.x) * (player_x - self.rect.x)
-                              + (player_y - self.rect.y) * (player_y - self.rect.y)))
-        return [distance, self.speedx, self.speedy]
+        mob_x = self.rect.x
+        mob_y = self.rect.y
+
+        state["speedx"] = self.speedx
+        state["speedy"] = self.speedy
+        state["distance"] = round(sqrt((player_x - mob_x) * (player_x - mob_x)
+                              + (player_y - mob_y) * (player_y - mob_y)))
+        state["dist_x"] = player_x - mob_x
+        state["dist_y"] = player_y - mob_y
+
+        state['mob_x'] = mob_x
+        state['mob_y'] = mob_y
+
+        return state
 
     def update(self):
         self.rect.x += self.speedx
@@ -145,7 +157,9 @@ game_start_time = time.time()
 score = 0
 
 ai_model = game.MovesSequence(generation, sc.path_to_evolution())
-game_state = game.GameState(Player.state_vector_size, Mob.state_vector_size, MOBS_SIZE)
+game_state = game.GameState(Player.state_vector_size,
+                            Mob.state_vector_size,
+                            MOBS_SIZE)
 
 # Game loop
 running = True
