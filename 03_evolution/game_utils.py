@@ -41,7 +41,7 @@ class MovesSequence:
 
 
 class GameState:
-    frames_to_remember = 1
+    frames_to_remember = 2
 
     def __init__(self, player_vector_size, mob_vector_size, mob_size):
         self.states = list()
@@ -49,7 +49,9 @@ class GameState:
         self.mob_vector_size = mob_vector_size
         self.mob_size = mob_size
         additional_features = 0
-        self.state_length = self.player_vector_size + self.mob_size * self.mob_vector_size + additional_features
+        labels_length = 1
+        self.state_length = self.player_vector_size + self.mob_size * self.mob_vector_size \
+                            + additional_features + labels_length
 
     def __save_game_state(self, current_game_state):
         if len(self.states) == GameState.frames_to_remember:
