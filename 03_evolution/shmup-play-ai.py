@@ -6,23 +6,25 @@ import pickle
 from math import sqrt
 
 # uncomment this to play headless
-# import os
-# os.environ['SDL_VIDEODRIVER'] = 'dummy'
+import os
+os.environ['SDL_VIDEODRIVER'] = 'dummy'
+
 import numpy as np
 import pygame
 import random
 from os import path
+import sys
 import time
 import game_utils as game
 
-# ai_model_pkl = pickle.load(open("models/1_frame/ai_model_mlp.pkl", "rb"))
-ai_model_pkl = pickle.load(open("ai_model_xgb.pkl", "rb"))
+model_name = sys.argv[1]
+ai_model_pkl = pickle.load(open("ai_model_" + model_name + ".pkl", "rb"))
 
 img_dir = path.join(path.dirname(__file__), '../img')
 
 WIDTH = 480
 HEIGHT = 600
-FPS = 30
+FPS = 240
 MOBS_SIZE = 8
 
 # define colors
@@ -143,9 +145,9 @@ class AI:
         self.ai_model = ai_model
 
     def next_move(self, game_state_vector):
-        print(game_state_vector)
-        prediction =  self.ai_model.predict(np.array(game_state_vector).reshape(1, -1))
-        print(prediction)
+        # print(game_state_vector)
+        prediction = self.ai_model.predict(np.array(game_state_vector).reshape(1, -1))
+        # print(prediction)
         return prediction[0]
         # return random.randint(0, 5)
 
