@@ -202,8 +202,8 @@ def evolve_sokol(candidates, generation):
 
     for i in range(0, len(next_generation) - 1):
         moves_to_mutate = next_generation[i]["moves"]
-        how_many_mutation = round(len(moves_to_mutate) / 100)
-        next_generation[i]["moves"] = mutate(moves_to_mutate, how_many_mutation)
+        how_many_mutation = round(len(moves_to_mutate) / 10)
+        next_generation[i]["moves"] = mutate_seq(moves_to_mutate, how_many_mutation)
 
     return next_generation
 
