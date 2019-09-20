@@ -45,8 +45,8 @@ class GameState:
 
     def __init__(self, player_vector_size, mob_vector_size, mob_size):
         self.states = list()
-        self.player_vector_size = 1 #player_vector_size
-        self.mob_vector_size = 4 #mob_vector_size
+        self.player_vector_size = player_vector_size
+        self.mob_vector_size = mob_vector_size
         self.mob_size = mob_size
         additional_features = 0
         self.state_length = self.player_vector_size + self.mob_size * self.mob_vector_size + additional_features
@@ -79,25 +79,14 @@ class GameState:
 
     def update_game_state(self, mobs, player, bullets, frame_count):
         state = list()
-        # state.extend(player.dump_state_vector()[0])
-        state.append(player.dump_state_vector()[1])
+        state.extend(player.dump_state_vector())
+        # state.append(player.dump_state_vector()[1])
 
-        count_mobs_on_left = 0
-
-        mob_vector_size = 4
+        mob_vector_size = self.mob_vector_size
         for mob in mobs.sprites():
             mob_state = mob.dump_state(player)
-
-            if mob_state['dist_x'] > 0:
-                count_mobs_on_left = count_mobs_on_left + 1
-
-            state.append(mob_state['dist_x'])
-            state.append(mob_state['dist_y'])
-            state.append(mob_state['speedy'])
-            state.append(mob_state['speedx'])
-
-            # mob_vec = mob_state.values()
-            # state.extend(mob_vec)
+            mob_vec = mob_state.values()
+            state.extend(mob_vec)
 
         # pad with empty mobs to have vector of the same size
         mob_length = len(mobs.sprites())

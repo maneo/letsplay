@@ -14,7 +14,7 @@ img_dir = path.join(path.dirname(__file__), '../img')
 
 WIDTH = 480
 HEIGHT = 600
-FPS = 30
+FPS = 24
 MOBS_SIZE = 8
 
 # define colors
@@ -220,7 +220,7 @@ while running:
     all_sprites.draw(screen)
     # *after* drawing everything, flip the display
     pygame.display.flip()
-    # game_state.print_state()
+    game_state.print_state()
     frame_count = frame_count + 1
 
 end = time.time()

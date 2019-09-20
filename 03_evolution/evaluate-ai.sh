@@ -3,12 +3,12 @@
 
 function eval_experiment() {
 
-	logfile="eval_${experiment_name}.log"
-	echo "evaluation of ${experiment_name}"
+	logfile="eval_${model_name}.log"
+	echo "evaluation of ${model_name}"
 
 	while [ $i -le $max_attempts ]
 	do
-	 python shmup-play-ai.py >> $logfile
+	 python shmup-play-ai.py ${model_name} >> $logfile
 	 ((i++))
 	done
 
@@ -16,12 +16,26 @@ function eval_experiment() {
 	avgtime=`cat $logfile | grep time | cut -d "," -f 1 | cut -d ":" -f 2 | cut -d " " -f 2 | awk '{ total += $1; count++ } END { print total/count }'`
 	avgscore=`cat $logfile | grep time | cut -d "," -f 2 | cut -d ":" -f 2 | cut -d " " -f 2 | awk '{ total += $1; count++ } END { print total/count }'`
 
-	echo "evaluation ${experiment_name} with $i attempts, resulted with, avg time: ${avgtime} and avg score: ${avgscore}"
+	echo "evaluation ${model_name} with $i attempts, resulted with, avg time: ${avgtime} and avg score: ${avgscore}"
 
 }
 
-experiment_name="mlp"
-max_attempts=4
+model_name="logit"
+max_attempts=9
+i=0
+
+eval_experiment
+
+
+model_name="xgb"
+max_attempts=9
+i=0
+
+eval_experiment
+
+
+model_name="mlp"
+max_attempts=9
 i=0
 
 eval_experiment
