@@ -4,14 +4,16 @@
 
 function get_data() {
     python shmup-play.py best_moves ${variant} > training-data-${variant}.log
-    tail -n +3 training-data-${variant}.log >> train-data-${variant}.csv
-    sed -i '' -e '$ d' train-data-${variant}.csv
+    tail -n +3 training-data-${variant}.log > train-data-tmp-${variant}.csv
+    sed -i '' -e '$ d' train-data-tmp-${variant}.csv
     was_alive=`tail -n 1 training-data-${variant}.log | grep True`
-    if [[ -z "${was_alive}" ]]
+    if [[ ! -z "${was_alive}" ]]
     then
-        # rm train-data-${variant}.csv
-        rm training-data-${variant}.log
+        cat train-data-tmp-${variant}.csv >> train-data-${variant}.csv
     fi
+    rm train-data-tmp-${variant}.csv
+    rm training-data-${variant}.log
+
 }
 
 variant="1_5"

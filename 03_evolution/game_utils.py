@@ -41,11 +41,11 @@ class MovesSequence:
 
 
 class GameState:
-    frames_to_remember = 2
+    frames_to_remember = 1
 
     def __init__(self, player_vector_size, mob_vector_size, mob_size):
         self.states = list()
-        self.player_vector_size = player_vector_size
+        self.player_vector_size = 1  #player_vector_size
         self.mob_vector_size = mob_vector_size
         self.mob_size = mob_size
         additional_features = 0
@@ -81,8 +81,8 @@ class GameState:
 
     def update_game_state(self, mobs, player, bullets, frame_count):
         state = list()
-        state.extend(player.dump_state_vector())
-        # state.append(player.dump_state_vector()[1])
+        # state.extend(player.dump_state_vector())
+        state.append(player.dump_state_vector()[1])
 
         mob_vector_size = self.mob_vector_size
         for mob in mobs.sprites():

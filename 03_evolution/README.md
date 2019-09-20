@@ -6,7 +6,62 @@
 - evaluation xgb with 10 attempts, resulted with, avg time: 27.9 and avg score: 6.55 - all/1frame
 - evaluation xgb with 5 attempts, resulted with, avg time: 29.44 and avg score: 8.76 - evo/1frame
 
+Eksperyment 20192009_4
 
+testowany wektor: player_x, rich mob, 1 klatka
+rich mob - speedx, speedy, distance, dist_x, dist_y, mob_x, mob_y
+
+XGBClassifier(n_estimators=500)
+MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(24, 24), random_state=1, max_iter=200000)
+
+```
+features = ["f" + str(i) for i in range(0,57)]
+label = ["action"]
+
+headers = features + label
+
+df = pd.read_csv('models/20192009_4/train.csv', 
+                 sep = ',', 
+                 header = None,
+                 names = headers)
+df
+```
+
+dane treningowe: ewolucyjne (89835)
+
+ewaluacja:
+evaluation logit with 10 attempts, resulted with, avg time: 7.93548 and avg score: 3.6129
+evaluation xgb with 10 attempts, resulted with, avg time: 5.96667 and avg score: 9.03333
+evaluation mlp with 10 attempts, resulted with, avg time: 11.1 and avg score: 16.7
+
+
+Eksperyment 20192009_3
+
+testowany wektor: player_x, rich mob, 1 klatka
+rich mob - speedx, speedy, distance, dist_x, dist_y, mob_x, mob_y
+
+XGBClassifier(n_estimators=500)
+MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(24, 24), random_state=1, max_iter=200000)
+
+```
+features = ["f" + str(i) for i in range(0,57)]
+label = ["action"]
+
+headers = features + label
+
+df = pd.read_csv('models/20192009_3/train.csv', 
+                 sep = ',', 
+                 header = None,
+                 names = headers)
+df
+```
+
+dane treningowe: ewolucyjne (41 383)
+
+ewaluacja:
+evaluation logit with 10 attempts, resulted with, avg time: 6.47619 and avg score: 3.95238
+evaluation xgb with 10 attempts, resulted with, avg time: 7.5 and avg score: 10.05
+evaluation mlp with 10 attempts, resulted with, avg time: 8.9 and avg score: 18
 
     
 Eksperyment 20192009_2
@@ -26,6 +81,8 @@ df = pd.read_csv('models/20192009_2/train.csv',
                  names = headers)
 ```
 
+XGBClassifier(n_estimators=500)
+MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(24, 24), random_state=1, max_iter=200000)
 
 dane treningowe: ewolucyjne (47 800)
 
