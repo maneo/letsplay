@@ -6,7 +6,15 @@
 - evaluation xgb with 10 attempts, resulted with, avg time: 27.9 and avg score: 6.55 - all/1frame
 - evaluation xgb with 5 attempts, resulted with, avg time: 29.44 and avg score: 8.76 - evo/1frame
 
+Eksperyment 20192109_1
+
+ile czlowiek naklika w 1100 klatek? 
+time: 67 sec, score: 201
+
+
 Eksperyment 20192009_7
+
+
 
 Eksperyment 20192009_6
 
@@ -35,7 +43,6 @@ ewaluacja:
 evaluation logit with 10 attempts, resulted with, avg time: 5.1 and avg score: 10.8
 evaluation xgb with 10 attempts, resulted with, avg time: 8.4 and avg score: 8.1
 evaluation mlp with 10 attempts, resulted with, avg time: 3.4 and avg score: 8.5
-
 
 
 Eksperyment 20192009_5
