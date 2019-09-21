@@ -1,4 +1,3 @@
-
 # Eksperyment 20192009_12
 
 reprezentacja: macierz 6x10, 2 klatki
@@ -30,6 +29,40 @@ mlp_model.fit(X_train_all, y_train_all)
 ```
 
 evaluation mlp with 10 attempts, resulted with, avg time: 9,48 and avg score: 27,18
+
+model xgb o rząd wielkosci wiekszy jezeli chodzi o rozmiar
+
+
+# Eksperyment 20192009_11
+
+- macierz 6x10 w kazdej macierzy ile jest asteroidów.
+
+dane: ewolucyjne.
+
+logit: Training accuracy: 0.31, evaluation accuracy: 0.30
+xgb: Training accuracy: 0.41, evaluation accuracy: 0.32
+forest: Training accuracy: 0.99, evaluation accuracy: 0.36
+mlp: Training accuracy: 0.49, evaluation accuracy: 0.30
+
+evaluation logit with 10 attempts, resulted with, avg time: 3.7 and avg score: 7.85
+evaluation xgb with 10 attempts, resulted with, avg time: 7.75 and avg score: 11.65
+evaluation mlp with 10 attempts, resulted with, avg time: 6 and avg score: 19.5333
+evaluation forest with 10 attempts, resulted with, avg time: 11.15 and avg score: 13.25
+
+miks danych ewolucyjnych i klikanych: 32343
+
+logit: Training accuracy: 0.29, evaluation accuracy: 0.29
+xgb: Training accuracy: 0.36, evaluation accuracy: 0.30
+forest: Training accuracy: 0.99, evaluation accuracy: 0.33
+mlp: Training accuracy: 0.43, evaluation accuracy: 0.27
+
+evaluation logit with 10 attempts, resulted with, avg time: 4.1 and avg score: 9.6
+evaluation xgb with 10 attempts, resulted with, avg time: 8.73333 and avg score: 13.1667
+evaluation mlp with 10 attempts, resulted with, avg time: 5.525 and avg score: 19.275
+evaluation forest with 10 attempts, resulted with, avg time: 11.2 and avg score: 15.8
+
+- forest też ma objawy myslenia.
+
 
 model xgb o rząd wielkosci wiekszy.
 
