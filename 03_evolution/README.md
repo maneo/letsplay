@@ -1,4 +1,34 @@
 
+Eksperyment 20192009_10
+
+- macierz 6x10 w kazdej macierzy ile jest asteroidów.
+
+```
+features = ["f" + str(i) for i in range(0,61)]
+label = ["action"]
+
+headers = features + label
+
+df = pd.read_csv('models/20192009_10/train.csv', 
+                 sep = ',', 
+                 header = None,
+                 names = headers)
+df
+```
+
+dane treningowe: 7148 (klikane)
+
+logit: Training accuracy: 0.39, evaluation accuracy: 0.37
+xgb: Training accuracy: 0.52, evaluation accuracy: 0.34
+forest: Training accuracy: 1.00, evaluation accuracy: 0.37
+mlp: ~ Training accuracy: 0.83, evaluation accuracy: 0.28
+
+evaluation logit with 10 attempts, resulted with, avg time: 1 and avg score: 0
+evaluation xgb with 10 attempts, resulted with, avg time: 1.7 and avg score: 2.8
+evaluation mlp with 10 attempts, resulted with, avg time: 3.1 and avg score: 12.9
+evaluation mlp_60_24_24 with 10 attempts, resulted with, avg time: 4.35 and avg score: 17.7
+evaluation forest with 10 attempts, resulted with, avg time: 2.2 and avg score: 0.8
+
 
 Eksperyment 20192109_1
 

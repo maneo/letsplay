@@ -46,11 +46,11 @@ class GameState:
     def __init__(self, player_vector_size, mob_vector_size, mob_size):
         self.states = list()
         self.player_vector_size = 1  #player_vector_size
-        self.mob_vector_size = 4 #mob_vector_size
+        self.mob_vector_size = 60 #mob_vector_size
         self.mob_size = mob_size
         additional_features = 0
         labels_length = 1
-        self.state_length = self.player_vector_size + self.mob_size * self.mob_vector_size \
+        self.state_length = self.player_vector_size + self.mob_vector_size \
                             + additional_features + labels_length
 
     def __save_game_state(self, current_game_state):
@@ -82,7 +82,7 @@ class GameState:
     def update_game_state(self, mobs, player, bullets, frame_count):
         state = list()
         # state.extend(player.dump_state_vector())
-        state.append(round(player.dump_state_vector()[1] / 48))
+        state.append(player.dump_state_vector()[1] % 6)
 
         # state["speedx"] = self.speedx
         # state["speedy"] = self.speedy
@@ -94,20 +94,28 @@ class GameState:
         # state['mob_x'] = mob_x
         # state['mob_y'] = mob_y
 
-        mob_vector_size = self.mob_vector_size
+        # x, y
+        mob_positions = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+        # mob_vector_size = self.mob_vector_size
         for mob in mobs.sprites():
             mob_state = mob.dump_state(player)
-            state.append(mob_state['speedx'])
-            state.append(mob_state['speedy'])
-            state.append(round(mob_state['mob_x'] / 48))
-            state.append(round(mob_state['mob_y'] / 60))
-            # mob_vec = mob_state.values()
-            # state.extend(mob_vec)
+            pos_x = mob_state['mob_x'] % 6
+            pos_y = mob_state['mob_y'] % 10
+            mob_positions[pos_x][pos_y] = mob_positions[pos_x][pos_y] + 1
+
+        for column in mob_positions:
+            state.extend(column)
 
         # pad with empty mobs to have vector of the same size
-        mob_length = len(mobs.sprites())
-        for j in range((self.mob_size - mob_length) * mob_vector_size):
-            state.append(0)
+        # mob_length = len(mobs.sprites())
+        # for j in range((self.mob_size - mob_length) * mob_vector_size):
+        #     state.append(0)
 
         # state.append(frame_count % 200)
         # state.append(len(bullets))
