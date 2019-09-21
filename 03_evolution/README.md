@@ -1,17 +1,111 @@
 
 
-- evaluation xgb with 10 attempts, resulted with, avg time: 34.6 and avg score: 4.1 - human/1frame
-- evaluation mlp with 10 attempts, resulted with, avg time: 17.8 and avg score: 7 - human/1frame
-- evaluation mlp with 10 attempts, resulted with, avg time: 13.7 and avg score: 4.55  - all/1frame
-- evaluation xgb with 10 attempts, resulted with, avg time: 27.9 and avg score: 6.55 - all/1frame
-- evaluation xgb with 5 attempts, resulted with, avg time: 29.44 and avg score: 8.76 - evo/1frame
-
 Eksperyment 20192109_1
 
 ile czlowiek naklika w 1100 klatek? 
 time: 67 sec, score: 201
 
 
+Eksperyment 20192009_9
+
+testowany wektor: player_x / 48, rich mob, 1 klatka
+rich mob - speedx, speedy, dist_x, / 48 dist_y / 60
+
+```
+features = ["f" + str(i) for i in range(0,33)]
+label = ["action"]
+
+headers = features + label
+
+df = pd.read_csv('models/20192009_9/train.csv', 
+                 sep = ',', 
+                 header = None,
+                 names = headers)
+df
+```
+dane treningowe: klikane (~10k)
+
+Dataset has 2026 (19.1%) duplicate rows
+
+wyniki:
+
+logit: 
+- Training accuracy: 0.46, evaluation accuracy: 0.45
+xgb: 
+- Training accuracy: 0.62, evaluation accuracy: 0.59 (estimators: 100)
+- Training accuracy: 0.70, evaluation accuracy: 0.65 (estimators: 500)
+mlp: 
+- Training accuracy: 0.70, evaluation accuracy: 0.68
+forest: 
+- Training accuracy: 0.78, evaluation accuracy: 0.40 (estimators: 100)
+
+evaluation logit with 10 attempts, resulted with, avg time: 6.26667 and avg score: 8.01667
+evaluation xgb with 10 attempts, resulted with, avg time: 4.98333 and avg score: 5.45
+evaluation mlp with 10 attempts, resulted with, avg time: 4.56667 and avg score: 6.58333
+evaluation forest with 10 attempts, resulted with, avg time: 3.65 and avg score: 3.95
+
+chetniej lata, ale stracil chęć do strzelania.
+
+wyglada na to, ze jak gra czlowiek to za wolno strzela w wyniku - tego jest dużo więcej pustych
+rekordów przesuwaniem, a mniej ze strzelaniem?
+
+po recznym przepisaniu (po predykcji) stanów na strzeljące:
+evaluation logit with 10 attempts, resulted with, avg time: 6.71429 and avg score: 8.85714
+evaluation xgb with 10 attempts, resulted with, avg time: 5.54286 and avg score: 8.21429
+evaluation mlp with 10 attempts, resulted with, avg time: 4.84286 and avg score: 8.17143
+evaluation forest with 10 attempts, resulted with, avg time: 5.5 and avg score: 8.3
+
+
+Eksperyment 20192009_8
+
+testowany wektor: player_x / 48, rich mob, 1 klatka
+rich mob - speedx, speedy, dist_x, / 48 dist_y / 60
+
+
+```
+features = ["f" + str(i) for i in range(0,33)]
+label = ["action"]
+
+headers = features + label
+
+df = pd.read_csv('models/20192009_8/train.csv', 
+                 sep = ',', 
+                 header = None,
+                 names = headers)
+df
+```
+
+dane treningowe: ewolucyjne (~29k)
+
+evaluation logit with 10 attempts, resulted with, avg time: 7.26667 and avg score: 9.83333
+evaluation xgb with 10 attempts, resulted with, avg time: 5.06667 and avg score: 6.83333
+evaluation mlp with 10 attempts, resulted with, avg time: 4 and avg score: 6.86667
+
+dane treningowe: ewolucyjne (47506)
+
+evaluation logit with 10 attempts, resulted with, avg time: 7.26667 and avg score: 9.83333
+evaluation xgb with 10 attempts, resulted with, avg time: 5.06667 and avg score: 6.83333
+evaluation mlp with 10 attempts, resulted with, avg time: 4 and avg score: 6.86667
+
+dane treningowe: ewolucyjne (84370)
+
+Dataset has 19220 (22.8%) duplicate rows
+
+evaluation logit with 10 attempts, resulted with, avg time: 7.8 and avg score: 10.05
+evaluation xgb with 10 attempts, resulted with, avg time: 6.025 and avg score: 6.725
+evaluation mlp with 10 attempts, resulted with, avg time: 5.05 and avg score: 7.875
+
+dane treningowe: 112910
+
+mlp: Training accuracy: 0.38, evaluation accuracy: 0.38
+xgb Training accuracy: 0.42, evaluation accuracy: 0.38
+logit: Training accuracy: 0.30, evaluation accuracy: 0.30
+forest: Training accuracy: 0.78, evaluation accuracy: 0.40 (model wazy powyzej 4GB)
+
+evaluation logit with 10 attempts, resulted with, avg time: 7.04 and avg score: 9.28
+evaluation xgb with 10 attempts, resulted with, avg time: 5.6 and avg score: 6.38
+evaluation mlp with 10 attempts, resulted with, avg time: 5.28 and avg score: 7.9
+evaluation forest with 10 attempts, resulted with, avg time: 5 and avg score: 7.9
 
 Eksperyment 20192009_7
 
@@ -24,7 +118,7 @@ label = ["action"]
 
 headers = features + label
 
-df = pd.read_csv('models/20192009_6/train.csv', 
+df = pd.read_csv('models/20192009_7/train.csv', 
                  sep = ',', 
                  header = None,
                  names = headers)

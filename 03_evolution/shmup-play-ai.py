@@ -144,10 +144,21 @@ class AI:
     def __init__(self, ai_model):
         self.ai_model = ai_model
 
+    # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
+    # 4 - left + shoot, 5 - right + shoot
     def next_move(self, game_state_vector):
         # print(game_state_vector)
         prediction = self.ai_model.predict(np.array(game_state_vector).reshape(1, -1))
         # print(prediction)
+        # if prediction[0] == 0:
+        #     return 4
+        #
+        # if prediction[0] == 1:
+        #     return 5
+        #
+        # if prediction[0] == 3:
+        #     return 2
+        #
         return prediction[0]
         # return random.randint(0, 5)
 

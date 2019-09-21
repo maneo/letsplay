@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-#rm train.csv
-
 function get_data() {
     python shmup-play.py best_moves ${variant} > training-data-${variant}.log
     tail -n +3 training-data-${variant}.log > train-data-tmp-${variant}.csv

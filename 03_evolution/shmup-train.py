@@ -222,8 +222,8 @@ while running:
     pygame.display.flip()
     game_state.print_state()
     frame_count = frame_count + 1
-    if frame_count > 1100:
-        break
+    # if frame_count > 1100:
+    #     break
 
 end = time.time()
 print("time: {} sec, score: {}".format(round(end - game_start_time), score))
