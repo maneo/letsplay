@@ -12,9 +12,30 @@ ile czlowiek naklika w 1100 klatek?
 time: 67 sec, score: 201
 
 
+
 Eksperyment 20192009_7
 
+testowany wektor: player_x / 480, rich mob, 1 klatka
+rich mob - speedx, speedy, dist_x, / 480 dist_y / 600
 
+```
+features = ["f" + str(i) for i in range(0,33)]
+label = ["action"]
+
+headers = features + label
+
+df = pd.read_csv('models/20192009_6/train.csv', 
+                 sep = ',', 
+                 header = None,
+                 names = headers)
+df
+```
+
+dane treningowe: ewolucyjne (~20k)
+
+evaluation logit with 10 attempts, resulted with, avg time: 6.9 and avg score: 9.3
+evaluation xgb with 10 attempts, resulted with, avg time: 5.3 and avg score: 5.85
+evaluation mlp with 10 attempts, resulted with, avg time: 4.45 and avg score: 7.7
 
 Eksperyment 20192009_6
 
@@ -30,7 +51,7 @@ label = ["action"]
 
 headers = features + label
 
-df = pd.read_csv('models/20192009_4/train.csv', 
+df = pd.read_csv('models/20192009_6/train.csv', 
                  sep = ',', 
                  header = None,
                  names = headers)
@@ -59,7 +80,7 @@ label = ["action"]
 
 headers = features + label
 
-df = pd.read_csv('models/20192009_4/train.csv', 
+df = pd.read_csv('models/20192009_5/train.csv', 
                  sep = ',', 
                  header = None,
                  names = headers)

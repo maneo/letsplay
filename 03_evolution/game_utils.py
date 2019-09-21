@@ -82,7 +82,7 @@ class GameState:
     def update_game_state(self, mobs, player, bullets, frame_count):
         state = list()
         # state.extend(player.dump_state_vector())
-        state.append(player.dump_state_vector()[1])
+        state.append(round(player.dump_state_vector()[1] / 480))
 
         # state["speedx"] = self.speedx
         # state["speedy"] = self.speedy
@@ -99,8 +99,8 @@ class GameState:
             mob_state = mob.dump_state(player)
             state.append(mob_state['speedx'])
             state.append(mob_state['speedy'])
-            state.append(mob_state['dist_x'])
-            state.append(mob_state['dist_y'])
+            state.append(round(mob_state['mob_x'] / 480))
+            state.append(round(mob_state['mob_y'] / 600))
             # mob_vec = mob_state.values()
             # state.extend(mob_vec)
 
