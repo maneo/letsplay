@@ -6,8 +6,35 @@
 - evaluation xgb with 10 attempts, resulted with, avg time: 27.9 and avg score: 6.55 - all/1frame
 - evaluation xgb with 5 attempts, resulted with, avg time: 29.44 and avg score: 8.76 - evo/1frame
 
+Eksperyment 20192009_7
 
 Eksperyment 20192009_6
+
+testowany wektor: player_x, rich mob, 1 klatka
+rich mob - speedx, speedy, dist_x, dist_y
+
+XGBClassifier(n_estimators=500)
+MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(24, 24), random_state=1, max_iter=200000)
+
+```
+features = ["f" + str(i) for i in range(0,33)]
+label = ["action"]
+
+headers = features + label
+
+df = pd.read_csv('models/20192009_4/train.csv', 
+                 sep = ',', 
+                 header = None,
+                 names = headers)
+df
+```
+
+dane treningowe: ewolucyjne (26 617)
+
+ewaluacja:
+evaluation logit with 10 attempts, resulted with, avg time: 5.1 and avg score: 10.8
+evaluation xgb with 10 attempts, resulted with, avg time: 8.4 and avg score: 8.1
+evaluation mlp with 10 attempts, resulted with, avg time: 3.4 and avg score: 8.5
 
 
 

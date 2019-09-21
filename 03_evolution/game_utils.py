@@ -46,7 +46,7 @@ class GameState:
     def __init__(self, player_vector_size, mob_vector_size, mob_size):
         self.states = list()
         self.player_vector_size = 1  #player_vector_size
-        self.mob_vector_size = mob_vector_size
+        self.mob_vector_size = 4 #mob_vector_size
         self.mob_size = mob_size
         additional_features = 0
         labels_length = 1
@@ -84,11 +84,25 @@ class GameState:
         # state.extend(player.dump_state_vector())
         state.append(player.dump_state_vector()[1])
 
+        # state["speedx"] = self.speedx
+        # state["speedy"] = self.speedy
+        # state["distance"] = round(sqrt((player_x - mob_x) * (player_x - mob_x)
+        #                       + (player_y - mob_y) * (player_y - mob_y)))
+        # state["dist_x"] = player_x - mob_x
+        # state["dist_y"] = player_y - mob_y
+        #
+        # state['mob_x'] = mob_x
+        # state['mob_y'] = mob_y
+
         mob_vector_size = self.mob_vector_size
         for mob in mobs.sprites():
             mob_state = mob.dump_state(player)
-            mob_vec = mob_state.values()
-            state.extend(mob_vec)
+            state.append(mob_state['speedx'])
+            state.append(mob_state['speedy'])
+            state.append(mob_state['dist_x'])
+            state.append(mob_state['dist_y'])
+            # mob_vec = mob_state.values()
+            # state.extend(mob_vec)
 
         # pad with empty mobs to have vector of the same size
         mob_length = len(mobs.sprites())

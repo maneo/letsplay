@@ -28,8 +28,6 @@ get_data &
 variant="1_6"
 get_data &
 
-wait
-
 variant="1_7"
 get_data &
 
@@ -55,8 +53,6 @@ get_data &
 
 variant="10_1"
 get_data &
-
-wait
 
 variant="10_4"
 get_data &
@@ -84,8 +80,6 @@ get_data &
 variant="20_5"
 get_data &
 
-wait
-
 variant="21_3"
 get_data &
 
@@ -111,8 +105,6 @@ get_data &
 
 variant="40_4"
 get_data &
-
-wait
 
 variant="10_2"
 get_data &
