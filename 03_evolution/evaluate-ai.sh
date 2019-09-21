@@ -20,18 +20,18 @@ function eval_experiment() {
 
 }
 
-model_name="logit"
-max_attempts=9
-i=0
-
-eval_experiment
-
-
-model_name="xgb"
-max_attempts=9
-i=0
-
-eval_experiment
+#model_name="logit"
+#max_attempts=9
+#i=0
+#
+#eval_experiment
+#
+#
+#model_name="xgb"
+#max_attempts=9
+#i=0
+#
+#eval_experiment
 
 
 model_name="mlp"
@@ -40,9 +40,9 @@ i=0
 
 eval_experiment
 
-
-model_name="forest"
-max_attempts=9
-i=0
-
-eval_experiment
+#
+#model_name="forest"
+#max_attempts=9
+#i=0
+#
+#eval_experiment

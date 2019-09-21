@@ -41,7 +41,7 @@ class MovesSequence:
 
 
 class GameState:
-    frames_to_remember = 1
+    frames_to_remember = 2
 
     def __init__(self, player_vector_size, mob_vector_size, mob_size):
         self.states = list()

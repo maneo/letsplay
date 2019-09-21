@@ -1,5 +1,39 @@
 
-Eksperyment 20192009_10
+# Eksperyment 20192009_12
+
+reprezentacja: macierz 6x10, 2 klatki
+
+dane treningowe: train.csv, 2359 (klikane)
+
+logit: Training accuracy: 0.52, evaluation accuracy: 0.43
+mlp: Training accuracy: 1.00, evaluation accuracy: 0.58
+
+evaluation logit with 10 attempts, resulted with, avg time: 7,1 and avg score: 16
+evaluation xgb with 10 attempts, resulted with, avg time: 7,4 and avg score: 13,7
+evaluation mlp with 10 attempts, resulted with, avg time: 7,5 and avg score: 43,3
+evaluation forest with 10 attempts, resulted with, avg time: 3 and avg score: 0,1
+
+```
+mlp_model = MLPClassifier(solver='adam', alpha=1e-5, 
+                    hidden_layer_sizes=(60, 24, 24), 
+                          random_state=1, verbose=True)
+```
+
+wersja extended: train_extended.csv, ~8k klikane (poprzednia iteracja włączona)
+
+```
+mlp_model = MLPClassifier(solver='adam', alpha=1e-5, 
+                    hidden_layer_sizes=(24, 24, 24), 
+                          random_state=1, verbose=True, max_iter=1000)
+
+mlp_model.fit(X_train_all, y_train_all)
+```
+
+evaluation mlp with 10 attempts, resulted with, avg time: 9,48 and avg score: 27,18
+
+model xgb o rząd wielkosci wiekszy.
+
+# Eksperyment 20192009_10
 
 - macierz 6x10 w kazdej macierzy ile jest asteroidów.
 
@@ -30,13 +64,13 @@ evaluation mlp_60_24_24 with 10 attempts, resulted with, avg time: 4.35 and avg 
 evaluation forest with 10 attempts, resulted with, avg time: 2.2 and avg score: 0.8
 
 
-Eksperyment 20192109_1
+# Eksperyment 20192109_1
 
 ile czlowiek naklika w 1100 klatek? 
 time: 67 sec, score: 201
 
 
-Eksperyment 20192009_9
+# Eksperyment 20192009_9
 
 testowany wektor: player_x / 48, rich mob, 1 klatka
 rich mob - speedx, speedy, dist_x, / 48 dist_y / 60
@@ -86,7 +120,7 @@ evaluation mlp with 10 attempts, resulted with, avg time: 4.84286 and avg score:
 evaluation forest with 10 attempts, resulted with, avg time: 5.5 and avg score: 8.3
 
 
-Eksperyment 20192009_8
+# Eksperyment 20192009_8
 
 testowany wektor: player_x / 48, rich mob, 1 klatka
 rich mob - speedx, speedy, dist_x, / 48 dist_y / 60
@@ -137,7 +171,7 @@ evaluation xgb with 10 attempts, resulted with, avg time: 5.6 and avg score: 6.3
 evaluation mlp with 10 attempts, resulted with, avg time: 5.28 and avg score: 7.9
 evaluation forest with 10 attempts, resulted with, avg time: 5 and avg score: 7.9
 
-Eksperyment 20192009_7
+# Eksperyment 20192009_7
 
 testowany wektor: player_x / 480, rich mob, 1 klatka
 rich mob - speedx, speedy, dist_x, / 480 dist_y / 600
@@ -161,7 +195,7 @@ evaluation logit with 10 attempts, resulted with, avg time: 6.9 and avg score: 9
 evaluation xgb with 10 attempts, resulted with, avg time: 5.3 and avg score: 5.85
 evaluation mlp with 10 attempts, resulted with, avg time: 4.45 and avg score: 7.7
 
-Eksperyment 20192009_6
+# Eksperyment 20192009_6
 
 testowany wektor: player_x, rich mob, 1 klatka
 rich mob - speedx, speedy, dist_x, dist_y
@@ -190,7 +224,7 @@ evaluation xgb with 10 attempts, resulted with, avg time: 8.4 and avg score: 8.1
 evaluation mlp with 10 attempts, resulted with, avg time: 3.4 and avg score: 8.5
 
 
-Eksperyment 20192009_5
+# Eksperyment 20192009_5
 
 testowany wektor: player_x, rich mob, 1 klatka
 rich mob - speedx, speedy, distance, dist_x, dist_y, mob_x, mob_y
@@ -216,7 +250,7 @@ evaluation logit with 10 attempts, resulted with, avg time: 7.60976 and avg scor
 evaluation xgb with 10 attempts, resulted with, avg time: 5.5 and avg score: 9
 evaluation mlp with 10 attempts, resulted with, avg time: 8.83333 and avg score: 15.8667
 
-Eksperyment 20192009_4
+# Eksperyment 20192009_4
 
 testowany wektor: player_x, rich mob, 1 klatka
 rich mob - speedx, speedy, distance, dist_x, dist_y, mob_x, mob_y
@@ -245,7 +279,7 @@ evaluation xgb with 10 attempts, resulted with, avg time: 5.96667 and avg score:
 evaluation mlp with 10 attempts, resulted with, avg time: 11.1 and avg score: 16.7
 
 
-Eksperyment 20192009_3
+# Eksperyment 20192009_3
 
 testowany wektor: player_x, rich mob, 1 klatka
 rich mob - speedx, speedy, distance, dist_x, dist_y, mob_x, mob_y
@@ -274,7 +308,7 @@ evaluation xgb with 10 attempts, resulted with, avg time: 7.5 and avg score: 10.
 evaluation mlp with 10 attempts, resulted with, avg time: 8.9 and avg score: 18
 
     
-Eksperyment 20192009_2
+# Eksperyment 20192009_2
 
 testowany wektor: player_speed_x, player_x, rich mob, 2 klatki
 rich mob - speedx, speedy, distance, dist_x, dist_y, mob_x, mob_y
@@ -300,9 +334,7 @@ evaluation logit with 10 attempts, resulted with, avg time: 12.3 and avg score: 
 evaluation xgb with 10 attempts, resulted with, avg time: 4.4 and avg score: 11.6
 evaluation mlp with 10 attempts, resulted with, avg time: 5.5 and avg score: 20
 
-
-
-Eksperyment 20192009_1
+# Eksperyment 20192009_1
 
 testowany wektor: player_speed_x, player_x, rich mob, 2 klatki
 rich mob - speedx, speedy, distance, dist_x, dist_y, mob_x, mob_y
