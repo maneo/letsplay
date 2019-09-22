@@ -124,10 +124,10 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.centerx = x
         self.speedy = -10
 
-    state_vector_size = 2
+    state_vector_size = 3
 
     def dump_state_vector(self):
-        return [self.rect.centerx, self.speedy]
+        return [self.rect.centerx, self.rect.centery, self.speedy]
 
     def update(self):
         self.rect.y += self.speedy

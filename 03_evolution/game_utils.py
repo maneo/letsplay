@@ -48,7 +48,7 @@ class GameState:
         self.player_vector_size = 1  #player_vector_size
         self.mob_vector_size = 60 #mob_vector_size
         self.mob_size = mob_size
-        additional_features = 0
+        additional_features = 60 # bullets size
         labels_length = 1
         self.state_length = self.player_vector_size + self.mob_vector_size \
                             + additional_features + labels_length
@@ -110,6 +110,22 @@ class GameState:
             mob_positions[pos_x][pos_y] = mob_positions[pos_x][pos_y] + 1
 
         for column in mob_positions:
+            state.extend(column)
+
+        bullets_positions = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+        for bullet in bullets:
+            bullet_state = bullet.dump_state_vector()
+            pos_x = bullet_state[0] % 6
+            pos_y = bullet_state[1] % 10
+            bullets_positions[pos_x][pos_y] = bullets_positions[pos_x][pos_y] + 1
+
+        for column in bullets_positions:
             state.extend(column)
 
         # pad with empty mobs to have vector of the same size

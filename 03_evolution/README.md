@@ -1,3 +1,26 @@
+# TODO
+- nauczyc ewolucje na podstawie synth-time
+- sprawdzic model na 4 klatkach
+
+# Eksperyment 20192009_14
+
+reprezentacja: macierz 6x10 - asteroidy, macierz 6x10 - kule, 2 klatki
+
+dane treningowe: train.csv, ~3800 (klikane)
+
+
+training
+* mlp: Training accuracy: 1.00, evaluation accuracy: 0.80
+* forest: evaluate_model(X_train, y_train, X_test, y_test, forest_model)
+* xgb: Training accuracy: 0.98, evaluation accuracy: 0.90
+* logit: Training accuracy: 0.66, evaluation accuracy: 0.60
+
+wyniki
+* evaluation logit with 10 attempts, resulted with, avg time: 1.5 and avg score: 0.2
+* evaluation xgb with 10 attempts, resulted with, avg time: 1.7 and avg score: 2.6
+* evaluation mlp with 10 attempts, resulted with, avg time: 4.5 and avg score: 21.1333
+* evaluation forest with 10 attempts, resulted with, avg time: 2.2 and avg score: 0.1
+
 # Eksperyment 20192009_12
 
 reprezentacja: macierz 6x10, 2 klatki
