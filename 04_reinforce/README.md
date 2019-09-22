@@ -1,2 +1,2 @@
 
-- proper reinforcement learning implementation
+- proper reinforcement learning implementation - TBD
