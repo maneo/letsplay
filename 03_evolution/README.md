@@ -8,10 +8,21 @@ reprezentacja: macierz 6x10 - asteroidy, macierz 6x10 - kule, 2 klatki
 
 dane treningowe: train.csv, ~3800 (klikane)
 
+```
+features = ["f" + str(i) for i in range(0,243)]
+label = ["action"]
+
+headers = features + label
+
+df = pd.read_csv('models/20192009_14/train.csv', 
+                 sep = ',', 
+                 header = None,
+                 names = headers)
+df
+```
 
 training
 * mlp: Training accuracy: 1.00, evaluation accuracy: 0.80
-* forest: evaluate_model(X_train, y_train, X_test, y_test, forest_model)
 * xgb: Training accuracy: 0.98, evaluation accuracy: 0.90
 * logit: Training accuracy: 0.66, evaluation accuracy: 0.60
 
