@@ -460,3 +460,19 @@ Model do testu wytrenowany na pełnych danych.
 - evaluation logit with 10 attempts, resulted with, avg time: 4.64516 and avg score: 13
 (ciagle strzela i stoi w miejscu)
 
+
+# Eksperyment 20192009_0
+
+testowany wektor: player_speed_x, player_x, rich mob, 1 klatka
+rich mob - speedx, speedy, distance, dist_x, dist_y, mob_x, mob_y
+
+dane treningowe: human (760)
+
+ewaluacja:
+* logit: Training accuracy: 0.78, evaluation accuracy: 0.71 
+* forest: Training accuracy: 1.00, evaluation accuracy: 1.00
+* xgb: Training accuracy: 0.80, evaluation accuracy: 0.75
+* mlp: Training accuracy: 0.65, evaluation accuracy: 0.68
+
+model do testu wytrenowany na pełnych danych 
+- evaluation forest with 10 attempts, resulted with, avg time: 17.5 and avg score: 1.8

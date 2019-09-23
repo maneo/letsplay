@@ -4,6 +4,9 @@
 # Adding graphics
 from math import sqrt
 
+import os
+os.environ['SDL_VIDEODRIVER'] = 'dummy'
+
 import pygame
 import random
 from os import path
@@ -18,7 +21,7 @@ img_dir = path.join(path.dirname(__file__), '../img')
 
 WIDTH = 480
 HEIGHT = 600
-FPS = 60
+FPS = 120
 MOBS_SIZE = 8
 
 # define colors
@@ -37,8 +40,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Shmup!")
 clock = pygame.time.Clock()
 
-ai_model = pickle.load(open("ai_model.pkl", "rb"))
-
+ai_model = pickle.load(open("ai_model_mlp.pkl", "rb"))
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -134,7 +136,6 @@ def get_game_state(mobs, player, bullets):
 
 def ai(game_state):
     return ai_model.predict(np.array(game_state).reshape(1, -1))
-    # return random.randint(0, 3)
 
 
 # Load all game graphics

@@ -95,6 +95,9 @@ class GameState:
         # state['mob_y'] = mob_y
 
         # x, y
+
+        state.append(player.dump_state_vector()[1] % 6)
+
         mob_positions = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -102,7 +105,6 @@ class GameState:
                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-        # mob_vector_size = self.mob_vector_size
         for mob in mobs.sprites():
             mob_state = mob.dump_state(player)
             pos_x = mob_state['mob_x'] % 6
