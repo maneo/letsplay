@@ -1,5 +1,22 @@
+Source code and samples for "Let's play" - use them responsibly.
 
-To prepare training data run
+Presentation title: Let's play! - The only AI presentation you will ever need!
+
+Abstract:
+```ML and AI technologies are a great tool to automate various business processess. 
+In this short presentation I will try to automate something significant, something 
+which usually takes long hours, may ruin health, lead to sleep deprevation, may 
+even break up families... we will try to teach computers play games so we won't
+have to. How to translate game play problem into language of ML algorithms? I 
+will explore possible solutions from the simplest manually crafted algorithm 
+through classical supervised learning methods to end up with reinforcement 
+learning based approaches. This presentation may contain asteroids, spaceships, 
+laser guns and a significant portion of poor Python code.
+```
+
+If you want to play with this source code take a look at ```conda``` folder contains conda env with all necessary dependencies.
+
+Each folder contains a little bit different things :-) but in general to prepare training data run
 
 ```
 python3 shmup-train.py > training.log
@@ -11,7 +28,7 @@ This should output numeric data about your gameplay.
 tail -n +3 training.log > train.csv; sed -i '' -e '$ d' train.csv
 ```
 
-You can play with data and tweak model in ai_model.ipynb notebook. This notebook shoulld output ai_model.pkl, which is used by shmup-play.py.
+You can play with data and tweak model in ```ai_model.ipynb``` notebook. This notebook should output ```ai_model.pkl```, which is used by shmup-play.py.
 
 To launch your model use:
 
@@ -19,36 +36,6 @@ To launch your model use:
 python3 shmup-play.py
 ```
 
-preso
-* nagrywanie akcja w oparciu o czas
-* model w oparciu o odleglosc w x od skaly
-* akcja w oparciu o odleglosc od skraju planszy i ciagle strzelanie
-* do modelu dodac pamiec klatek
-* reinforcement learning niech sam wymyśli optymalny algorytm
+in case of 03_evolutino use ```shmup-play.sh``` plays move sequences from ```evolution``` subfolder. 
 
-todo
-* dodać licznik punktów do stanu gry
-* dodac odleglosc w x i y
-* dodać pamiec poprzednich klatek
-
-done
-* model w oparciu o sieć neuronową
-* dodac dwa nowe stany, przesun sie w prawo i strzel, przesun sie w lewo i strzel
-
-
-TODOsy
-* uporządkować kody
-* generowanie losowych ruchów jako model i jego ewaluacja
-* zrobić slajdy początkowe - jak postrzega świat algorytm MLowy?
-* slajdy do jak wpiąć się w gre?
-* slajdy do baseline 1
-* slajdy do baseline 2
-* slajdy do zbieramy dane
-* kodas do ewolucji - generator ruchów
-* slajdy do reinforcmenet leanirngu
-* zdecydować czy zmergować ewolucje z RL?
-* slajdy do ewolucji
-* kodas do reinforcement learningu
-
-DONE
-* wypchnąć do prywatnego repo na github
+If you want to launch model use ```shmup-lay-ai.sh model_name```.
