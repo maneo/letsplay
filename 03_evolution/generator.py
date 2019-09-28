@@ -146,10 +146,14 @@ def evolve_sokol(candidates, generation):
     parent_1 = candidates[0]
     parent_1_moves = load_moves(parent_1["seq_file"])
 
-    parent_2 = candidates[1]
+    parent_2 = candidates[0]
+    if len(candidates) > 1:
+        parent_2 = candidates[1]
     parent_2_moves = load_moves(parent_2["seq_file"])
 
     parent_3 = candidates[2]
+    if len(candidates) > 2:
+        parent_3 = candidates[2]
     parent_3_moves = load_moves(parent_3["seq_file"])
 
     next_generation = list()
@@ -202,7 +206,7 @@ def evolve_sokol(candidates, generation):
 
     for i in range(0, len(next_generation) - 1):
         moves_to_mutate = next_generation[i]["moves"]
-        how_many_mutation = round(len(moves_to_mutate) / 100)
+        how_many_mutation = round(len(moves_to_mutate) / 10)
         next_generation[i]["moves"] = mutate(moves_to_mutate, how_many_mutation)
 
     return next_generation
