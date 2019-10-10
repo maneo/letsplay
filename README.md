@@ -14,7 +14,7 @@ learning based approaches. This presentation may contain asteroids, spaceships,
 laser guns and a significant portion of poor Python code.
 ```
 
-If you want to play with this source code take a look at ```conda``` folder contains conda env with all necessary dependencies.
+If you want to play with this source code take a look at ```conda``` folder contains conda env with all necessary dependencies. Create conda env and activate it.
 
 Each folder contains a little bit different things :-) but in general to prepare training data run
 

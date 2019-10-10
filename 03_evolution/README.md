@@ -1,6 +1,11 @@
 # TODO
 - nauczyc ewolucje na podstawie synth-time
 - sprawdzic model na 4 klatkach
+- zrzucać sekwencje 10 stanów, które doprowadziły do trafienia
+- zrzucać sekwencje 10 stanów, które doprowadziły do śmierci
+- zrobić odwarzanie stanu gry na podstawie opisu - wziąć stany 
+  prowadzące do śmierci i szukać rozwiązania które do śmierci nie doprowadzi. 
+
 
 # Eksperyment 20192009_14
 

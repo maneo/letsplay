@@ -46,9 +46,9 @@ class GameState:
     def __init__(self, player_vector_size, mob_vector_size, mob_size):
         self.states = list()
         self.player_vector_size = 1  #player_vector_size
-        self.mob_vector_size = 60 #mob_vector_size
+        self.mob_vector_size = 48 #mob_vector_size
         self.mob_size = mob_size
-        additional_features = 60 # bullets size
+        additional_features = 0
         labels_length = 1
         self.state_length = self.player_vector_size + self.mob_vector_size \
                             + additional_features + labels_length
@@ -95,50 +95,21 @@ class GameState:
         # state['mob_y'] = mob_y
 
         # x, y
-
-        state.append(player.dump_state_vector()[1] % 6)
-
-        mob_positions = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        mob_positions = [[0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0],
+                         [0, 0, 0, 0, 0, 0, 0, 0]]
 
         for mob in mobs.sprites():
             mob_state = mob.dump_state(player)
             pos_x = mob_state['mob_x'] % 6
-            pos_y = mob_state['mob_y'] % 10
+            pos_y = mob_state['mob_y'] % 8
             mob_positions[pos_x][pos_y] = mob_positions[pos_x][pos_y] + 1
 
         for column in mob_positions:
             state.extend(column)
-
-        bullets_positions = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
-        for bullet in bullets:
-            bullet_state = bullet.dump_state_vector()
-            pos_x = bullet_state[0] % 6
-            pos_y = bullet_state[1] % 10
-            bullets_positions[pos_x][pos_y] = bullets_positions[pos_x][pos_y] + 1
-
-        for column in bullets_positions:
-            state.extend(column)
-
-        # pad with empty mobs to have vector of the same size
-        # mob_length = len(mobs.sprites())
-        # for j in range((self.mob_size - mob_length) * mob_vector_size):
-        #     state.append(0)
-
-        # state.append(frame_count % 200)
-        # state.append(len(bullets))
-
-        # todo add previous action
 
         self.__save_game_state(state)
 

@@ -3,6 +3,9 @@ import os
 import score_utils as sc
 import random
 
+# 0 - left, 1 - right, 2 - shoot, 3 - nothing,
+# 4 - left + shoot, 5 - right + shoot
+
 generation = int(sys.argv[2])
 path_to_evolution = sc.path_to_evolution()
 
@@ -16,41 +19,16 @@ def load_moves(file_name):
         return clean_seq
 
 
-# 0 - left, 1 - right, 2 - shoot, 3 - nothing,
-# 4 - left + shoot, 5 - right + shoot
-def new_moves_generator(moves_to_extend, variant):
-    variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5, "6": 3}
-    moves_to_extend.append(str(variants_and_moves[variant]))
-    return moves_to_extend
-
-
-def new_moves_generator_kruk(moves_to_extend, variant):
-    variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5, "6": 3}
-    moves_to_extend.append(str(variants_and_moves[variant]))
-    moves_to_extend.append(random_move())
-    moves_to_extend.append(str(variants_and_moves[variant]))
-    moves_to_extend.append(random_move())
-    moves_to_extend.append(str(variants_and_moves[variant]))
-    moves_to_extend.append(random_move())
-    moves_to_extend.append(str(variants_and_moves[variant]))
-    moves_to_extend.append(random_move())
-    moves_to_extend.append(str(variants_and_moves[variant]))
-    moves_to_extend.append(random_move())
-    return moves_to_extend
-
-
-def new_moves_generator_smok(moves_to_extend, variant):
-    variants_and_moves = [
-                           ["0", "4", "0", "4", "0", "4"],
-                           ["1", "5", "1", "5", "1", "5"],
-                           ["4", "4", "4", "4", "4", "4"],
-                           ["5", "5", "5", "5", "5", "5"],
-                           ["0", "4", "0", "0", "4", "0"],
-                           ["0", "2", "0", "2", "1", "1"],
-    ]
-    random_variant = random.randint(0, len(variants_and_moves) - 1)
-    moves_to_extend.extend(variants_and_moves[random_variant])
-    return moves_to_extend
+# new_moves = [ { "generation", "variant", "moves" }, .. ]
+def save_new_moves(new_moves, path_to_evolution):
+    for new_move in new_moves:
+        filename = os.path.join(path_to_evolution, "gen_"
+                                + str(new_move["generation"]) + "_"
+                                + str(new_move["variant"]) + ".seq")
+        with open(filename, 'w') as out:
+            for move in new_move["moves"]:
+                out.write(str(move) + "\n")
+        print(filename + " generated")
 
 
 def random_move():
@@ -112,6 +90,41 @@ def mutate_seq(offspring_moves, how_many_mutations):
             mutant_moves[mutation_idx + j] = mutation_moves_seq[j]
 
     return mutant_moves
+
+
+def new_moves_generator(moves_to_extend, variant):
+    variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5, "6": 3}
+    moves_to_extend.append(str(variants_and_moves[variant]))
+    return moves_to_extend
+
+
+def new_moves_generator_kruk(moves_to_extend, variant):
+    variants_and_moves = {"1": 0, "2": 1, "3": 2, "4": 4, "5": 5, "6": 3}
+    moves_to_extend.append(str(variants_and_moves[variant]))
+    moves_to_extend.append(random_move())
+    moves_to_extend.append(str(variants_and_moves[variant]))
+    moves_to_extend.append(random_move())
+    moves_to_extend.append(str(variants_and_moves[variant]))
+    moves_to_extend.append(random_move())
+    moves_to_extend.append(str(variants_and_moves[variant]))
+    moves_to_extend.append(random_move())
+    moves_to_extend.append(str(variants_and_moves[variant]))
+    moves_to_extend.append(random_move())
+    return moves_to_extend
+
+
+def new_moves_generator_smok(moves_to_extend, variant):
+    variants_and_moves = [
+                           ["0", "4", "0", "4", "0", "4"],
+                           ["1", "5", "1", "5", "1", "5"],
+                           ["4", "4", "4", "4", "4", "4"],
+                           ["5", "5", "5", "5", "5", "5"],
+                           ["0", "4", "0", "0", "4", "0"],
+                           ["0", "2", "0", "2", "1", "1"],
+    ]
+    random_variant = random.randint(0, len(variants_and_moves) - 1)
+    moves_to_extend.extend(variants_and_moves[random_variant])
+    return moves_to_extend
 
 
 # candidate { "seq_file", "generation", "variant", "score", "time" }
@@ -337,18 +350,6 @@ def evolve_fixed_length_kaczka(candidates, generation):
     new_candidates.append(get_offspring(mutant_1_2_moves, 6, new_generation))
 
     return new_candidates
-
-
-# new_moves = [ { "generation", "variant", "moves" }, .. ]
-def save_new_moves(new_moves, path_to_evolution):
-    for new_move in new_moves:
-        filename = os.path.join(path_to_evolution, "gen_"
-                                + str(new_move["generation"]) + "_"
-                                + str(new_move["variant"]) + ".seq")
-        with open(filename, 'w') as out:
-            for move in new_move["moves"]:
-                out.write(str(move) + "\n")
-        print(filename + " generated")
 
 
 generations_metada = dict()

@@ -35,12 +35,11 @@ YELLOW = (255, 255, 0)
 
 # initialize pygame and create window
 pygame.init()
-pygame.mixer.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Shmup!")
 clock = pygame.time.Clock()
 
-ai_model = pickle.load(open("ai_model_mlp.pkl", "rb"))
+ai_model = pickle.load(open("ai_model.pkl", "rb"))
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):

@@ -3,6 +3,7 @@
 generation=1
 max_score=0
 gradient=0
+
 iteration_without_improvement=0
 recent_gain_generation=0
 experiment_name=$1
