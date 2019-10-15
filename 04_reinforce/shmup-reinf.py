@@ -166,13 +166,14 @@ while games_played < 150:
     # Game loop
     running = True
     while running:
+
         # level of randomness depending on number of games played
-        ai.epsilon = 100 - games_played
+        ai.epsilon = 80 - games_played
 
         # keep loop running at the right speed
         clock.tick(FPS)
         was_shooting = False
-        scored = False
+        old_score = score
 
         # get state before action
         state_old = game_state.dump_state()
@@ -211,7 +212,6 @@ while games_played < 150:
             all_sprites.add(m)
             mobs.add(m)
             score += 1
-            scored = True
 
         # check to see if a mob hit the player
         hits = pygame.sprite.spritecollide(player, mobs, False)
@@ -219,7 +219,7 @@ while games_played < 150:
             running = False
 
         # get reward
-        reward = ai.set_reward(scored, running)
+        reward = ai.set_reward(score - old_score, running)
 
         game_state.update_game_state(mobs, player, bullets)
         state_new = game_state.dump_state()

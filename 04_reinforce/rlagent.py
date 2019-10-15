@@ -29,13 +29,13 @@ class RLAgent:
     def get_state(self, state):
         return np.asarray(state)
 
-    def set_reward(self, scored, running):
+    def set_reward(self, score_increase, running):
         self.reward = 0
         if not running:
             self.reward = -10
             return self.reward
-        if scored:
-            self.reward = 10
+        if score_increase > 0:
+            self.reward = 10 * score_increase
         return self.reward
 
     def network(self, weights=None):
@@ -59,8 +59,8 @@ class RLAgent:
         self.memory.append((state, action, reward, next_state, not running))
 
     def replay_new(self, memory):
-        if len(memory) > 100000:
-            minibatch = random.sample(memory, 100000)
+        if len(memory) > 5000:
+            minibatch = random.sample(memory, 5000)
         else:
             minibatch = memory
         for state, action, reward, next_state, done in minibatch:
@@ -69,7 +69,7 @@ class RLAgent:
                 target = reward + self.gamma * np.amax(self.model.predict(np.array([next_state]))[0])
             target_f = self.model.predict(np.array([state]))
             target_f[0][np.argmax(action)] = target
-            self.model.fit(np.array([state]), target_f, epochs=1, verbose=0)
+            self.model.fit(np.array([state]), target_f, epochs=2, verbose=0)
 
     def train_short_memory(self, state, action, reward, next_state, running):
         target = reward
@@ -77,7 +77,7 @@ class RLAgent:
             target = reward + self.gamma * np.amax(self.model.predict(next_state.reshape((1, self.input_vector_size)))[0])
         target_f = self.model.predict(state.reshape((1, self.input_vector_size)))
         target_f[0][np.argmax(action)] = target
-        self.model.fit(state.reshape((1, self.input_vector_size)), target_f, epochs=1, verbose=0)
+        self.model.fit(state.reshape((1, self.input_vector_size)), target_f, epochs=2, verbose=0)
 
     @staticmethod
     def to_categorical(category):
