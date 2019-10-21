@@ -5,8 +5,8 @@
 from math import sqrt
 
 # uncomment this to play headless
-import os
-os.environ['SDL_VIDEODRIVER'] = 'dummy'
+# import os
+# os.environ['SDL_VIDEODRIVER'] = 'dummy'
 
 import numpy as np
 import pygame
@@ -134,8 +134,7 @@ games_played = 0
 state_vector_size = game.GameState.vector_size
 ai = reinf.RLAgent(state_vector_size)
 
-
-while games_played < 150:
+while games_played < 400:
 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -168,7 +167,7 @@ while games_played < 150:
     while running:
 
         # level of randomness depending on number of games played
-        ai.epsilon = 80 - games_played
+        ai.epsilon = 200 - games_played
 
         # keep loop running at the right speed
         clock.tick(FPS)

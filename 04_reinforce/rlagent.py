@@ -13,7 +13,7 @@ class RLAgent:
 
     def __init__(self, input_vector_size):
         self.reward = 0
-        self.gamma = 0.9
+        self.gamma = 0.8
         self.dataframe = pd.DataFrame()
         self.short_memory = np.array([])
         self.agent_target = 1
@@ -24,7 +24,7 @@ class RLAgent:
         self.memory = []
         self.input_vector_size = input_vector_size
         self.model = self.network()
-        #self.model = self.network("weights_150_5000_80.hdf5")
+        self.model = self.network("weights.hdf5")
 
     def get_state(self, state):
         return np.asarray(state)
@@ -32,7 +32,7 @@ class RLAgent:
     def set_reward(self, score_increase, running):
         self.reward = 0
         if not running:
-            self.reward = -10
+            self.reward = -20
             return self.reward
         if score_increase > 0:
             self.reward = 10 * score_increase
@@ -69,7 +69,7 @@ class RLAgent:
                 target = reward + self.gamma * np.amax(self.model.predict(np.array([next_state]))[0])
             target_f = self.model.predict(np.array([state]))
             target_f[0][np.argmax(action)] = target
-            self.model.fit(np.array([state]), target_f, epochs=2, verbose=0)
+            self.model.fit(np.array([state]), target_f, epochs=1, verbose=0)
 
     def train_short_memory(self, state, action, reward, next_state, running):
         target = reward
@@ -77,7 +77,7 @@ class RLAgent:
             target = reward + self.gamma * np.amax(self.model.predict(next_state.reshape((1, self.input_vector_size)))[0])
         target_f = self.model.predict(state.reshape((1, self.input_vector_size)))
         target_f[0][np.argmax(action)] = target
-        self.model.fit(state.reshape((1, self.input_vector_size)), target_f, epochs=2, verbose=0)
+        self.model.fit(state.reshape((1, self.input_vector_size)), target_f, epochs=4, verbose=0)
 
     @staticmethod
     def to_categorical(category):
