@@ -24,7 +24,7 @@ class RLAgent:
         self.memory = []
         self.input_vector_size = input_vector_size
         self.model = self.network()
-        self.model = self.network("weights.hdf5")
+        # self.model = self.network("weights.hdf5")
 
     def get_state(self, state):
         return np.asarray(state)
@@ -32,7 +32,7 @@ class RLAgent:
     def set_reward(self, score_increase, running):
         self.reward = 0
         if not running:
-            self.reward = -20
+            self.reward = -100
             return self.reward
         if score_increase > 0:
             self.reward = 10 * score_increase
@@ -59,8 +59,8 @@ class RLAgent:
         self.memory.append((state, action, reward, next_state, not running))
 
     def replay_new(self, memory):
-        if len(memory) > 5000:
-            minibatch = random.sample(memory, 5000)
+        if len(memory) > 10000:
+            minibatch = random.sample(memory, 10000)
         else:
             minibatch = memory
         for state, action, reward, next_state, done in minibatch:
@@ -69,7 +69,7 @@ class RLAgent:
                 target = reward + self.gamma * np.amax(self.model.predict(np.array([next_state]))[0])
             target_f = self.model.predict(np.array([state]))
             target_f[0][np.argmax(action)] = target
-            self.model.fit(np.array([state]), target_f, epochs=1, verbose=0)
+            self.model.fit(np.array([state]), target_f, epochs=2, verbose=0)
 
     def train_short_memory(self, state, action, reward, next_state, running):
         target = reward
@@ -77,7 +77,7 @@ class RLAgent:
             target = reward + self.gamma * np.amax(self.model.predict(next_state.reshape((1, self.input_vector_size)))[0])
         target_f = self.model.predict(state.reshape((1, self.input_vector_size)))
         target_f[0][np.argmax(action)] = target
-        self.model.fit(state.reshape((1, self.input_vector_size)), target_f, epochs=4, verbose=0)
+        self.model.fit(state.reshape((1, self.input_vector_size)), target_f, epochs=2, verbose=0)
 
     @staticmethod
     def to_categorical(category):

@@ -129,9 +129,10 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 
+
 games_played = 0
 
-state_vector_size = game.GameState.vector_size
+state_vector_size = game.GameState.final_vector_size
 ai = reinf.RLAgent(state_vector_size)
 
 while games_played < 400:
@@ -188,6 +189,7 @@ while games_played < 400:
         # game_state.save_action(action)
 
         action = reinf.RLAgent.from_categorical(final_move)
+        game_state.save_action(action)
 
         # Process input (events)
         for event in pygame.event.get():

@@ -44,8 +44,9 @@ class MovesSequence:
 
 
 class GameState:
-    frames_to_remember = 1
-    vector_size = 1 + 48
+    frames_to_remember = 2
+    vector_size = 1 + 48 + 1
+    final_vector_size = vector_size * frames_to_remember - 1
 
     def __init__(self):
         self.states = list()
@@ -80,7 +81,7 @@ class GameState:
         for state in self.states:
             game_state_vector.extend(state)
 
-        return np.asarray(game_state_vector)
+        return np.asarray(game_state_vector[:GameState.final_vector_size])
 
     def print_state(self):
         print(','.join(map(str, self.dump_state())))
