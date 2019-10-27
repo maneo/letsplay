@@ -135,7 +135,7 @@ games_played = 0
 state_vector_size = game.GameState.final_vector_size
 ai = reinf.RLAgent(state_vector_size)
 
-while games_played < 400:
+while games_played < 1000:
 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -168,7 +168,7 @@ while games_played < 400:
     while running:
 
         # level of randomness depending on number of games played
-        ai.epsilon = 200 - games_played
+        ai.epsilon = 400 - games_played
 
         # keep loop running at the right speed
         clock.tick(FPS)
@@ -180,7 +180,7 @@ while games_played < 400:
 
         # predict action
         final_move = reinf.RLAgent.to_categorical(random.randint(0, 5))
-        if random.randint(0, 200) > ai.epsilon:
+        if random.randint(0, 400) > ai.epsilon:
             # predict action based on the old state
             prediction = ai.model.predict(state_old.reshape((1, state_vector_size)))
             final_move = reinf.RLAgent.to_categorical(np.argmax(prediction[0]))

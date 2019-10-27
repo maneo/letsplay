@@ -35,7 +35,7 @@ class RLAgent:
             self.reward = -100
             return self.reward
         if score_increase > 0:
-            self.reward = 10 * score_increase
+            self.reward = 2 * score_increase
         return self.reward
 
     def network(self, weights=None):
