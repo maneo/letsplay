@@ -7,10 +7,11 @@ logs_dir="${base_dir_name}/logs"
 
 while [[ ${population} -le 2 ]]
 do
-	cp -R "${base_dir_name}/template_fixed_game" "${base_dir_name}/${population}_experiment"
-#	cp -R "${base_dir_name}/template" "${base_dir_name}/${population}_experiment"
+    experiment_name="${population}_experiment_base"
+    cp -R "${base_dir_name}/template" "${base_dir_name}/${experiment_name}"
+#	cp -R "${base_dir_name}/template_fixed_game" "${base_dir_name}/${experiment_name}"
 	date
-	bash evolve.sh "${population}_experiment" > "${base_dir_name}/${population}_experiment/experiment.log"
+	bash evolve.sh "${experiment_name}" > "${base_dir_name}/${experiment_name}/experiment.log"
 	date
 	((population++))
 done
