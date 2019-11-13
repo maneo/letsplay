@@ -4,6 +4,7 @@
 # Adding graphics
 import pickle
 from math import sqrt
+import pandas as pd
 
 # uncomment this to play headless
 # import os
@@ -16,9 +17,11 @@ from os import path
 import sys
 import time
 import game_utils as game
+impoty rlagent as ai
+from sklearn.neural_network import MLPClassifier
 
 model_name = sys.argv[1]
-ai_model_pkl = pickle.load(open("ai_model_" + model_name + ".pkl", "rb"))
+# ai_model_pkl = pickle.load(open("ai_model_" + model_name + ".pkl", "rb"))
 
 img_dir = path.join(path.dirname(__file__), '../img')
 
@@ -41,6 +44,53 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Shmup!")
 clock = pygame.time.Clock()
+
+
+def load_historical_train():
+    df = pd.read_csv('train.csv', sep = ';', encoding='utf-8')
+    return df
+
+
+def save_trainig_data(all_training_data):
+    all_training_data.to_csv("train.csv", sep=';', encoding='utf-8', index=False)
+
+
+def get_best_action(game_state, classifier):
+    actions = [0, 1, 2, 3, 4, 5]
+    results = dict()
+    for action in actions:
+        game_state_1f = game_state
+        game_state_1f['action'] = action
+        result = classifier.predict(game_state_1f.values.reshape(1, -1))
+        results[action] = result[0]
+
+    max_value = -1
+    max_action = 0
+    for key in results.keys():
+        if results[key] > max_value:
+            max_value = results[key]
+            max_action = key
+    return max_action
+
+
+def initialize_classifier(all_training_data):
+    X_train = all_training_data.drop(columns="reward")
+    y_train = all_training_data["reward"]
+
+    mlp = MLPClassifier(solver='adam', alpha=1e-4,
+                        hidden_layer_sizes=(24, 24, 24, 24),
+                        random_state=1, verbose=True)
+
+    return mlp.fit(X_train, y_train)
+
+
+def retrain_model(all_training_data, game_state, action, reward):
+    final_training_vector = game_state
+    final_training_vector['action'] = action
+    final_training_vector['reward'] = reward
+
+    all_training_data.append(final_training_vector)
+    return initialize_classifier(all_training_data), all_training_data
 
 
 class Player(pygame.sprite.Sprite):
@@ -162,7 +212,9 @@ class AI:
         # return random.randint(0, 5)
 
 
-ai_agent = AI(ai_model_pkl)
+# ai_agent = AI(ai_model_pkl)
+all_training_data = load_historical_train()
+classifier = initialize_classifier(all_training_data)
 
 # Load all game graphics
 background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()

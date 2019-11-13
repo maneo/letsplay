@@ -5,8 +5,8 @@
 from math import sqrt
 
 # uncomment this to play headless
-import os
-os.environ['SDL_VIDEODRIVER'] = 'dummy'
+# import os
+# os.environ['SDL_VIDEODRIVER'] = 'dummy'
 
 import pygame
 import random

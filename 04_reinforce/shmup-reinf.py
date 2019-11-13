@@ -2,7 +2,6 @@
 # Shmup game - part 4
 # Video link: https://www.youtube.com/watch?v=mOckdKp3V38
 # Adding graphics
-import pickle
 from math import sqrt
 
 # uncomment this to play headless
@@ -15,10 +14,8 @@ import random
 from os import path
 import sys
 import time
+import rlagent as reinf
 import game_utils as game
-
-model_name = sys.argv[1]
-ai_model_pkl = pickle.load(open("ai_model_" + model_name + ".pkl", "rb"))
 
 img_dir = path.join(path.dirname(__file__), '../img')
 
@@ -34,13 +31,6 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
-
-
-# initialize pygame and create window
-pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Shmup!")
-clock = pygame.time.Clock()
 
 
 class Player(pygame.sprite.Sprite):
@@ -139,108 +129,123 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 
-class AI:
-    def __init__(self, ai_model):
-        self.ai_model = ai_model
 
-    # 0 - left, 1 - right, 2 - shoot, 3 - nothing,
-    # 4 - left + shoot, 5 - right + shoot
-    def next_move(self, game_state_vector):
-        # print(game_state_vector)
-        prediction = self.ai_model.predict(np.array(game_state_vector).reshape(1, -1))
-        # print(prediction)
-        # if prediction[0] == 0:
-        #     return 4
-        #
-        # if prediction[0] == 1:
-        #     return 5
-        #
-        # if prediction[0] == 3:
-        #     return 2
-        #
-        return prediction[0]
-        # return random.randint(0, 5)
+games_played = 0
 
+state_vector_size = game.GameState.final_vector_size
+ai = reinf.RLAgent(state_vector_size)
 
-ai_agent = AI(ai_model_pkl)
+while games_played < 400:
 
-# Load all game graphics
-background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
-background_rect = background.get_rect()
-player_img = pygame.image.load(path.join(img_dir, "playerShip1_orange.png")).convert()
-meteor_img = pygame.image.load(path.join(img_dir, "meteorBrown_med1.png")).convert()
-bullet_img = pygame.image.load(path.join(img_dir, "laserRed16.png")).convert()
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Shmup!")
+    clock = pygame.time.Clock()
 
-all_sprites = pygame.sprite.Group()
-mobs = pygame.sprite.Group()
-bullets = pygame.sprite.Group()
-player = Player()
-all_sprites.add(player)
-for i in range(MOBS_SIZE):
-    m = Mob()
-    all_sprites.add(m)
-    mobs.add(m)
+    # Load all game graphics
+    background = pygame.image.load(path.join(img_dir, "starfield.png")).convert()
+    background_rect = background.get_rect()
+    player_img = pygame.image.load(path.join(img_dir, "playerShip1_orange.png")).convert()
+    meteor_img = pygame.image.load(path.join(img_dir, "meteorBrown_med1.png")).convert()
+    bullet_img = pygame.image.load(path.join(img_dir, "laserRed16.png")).convert()
 
-game_start_time = time.time()
-score = 0
-frame_count = 0
-
-game_state = game.GameState(Player.state_vector_size, Mob.state_vector_size, MOBS_SIZE)
-
-# Game loop
-running = True
-while running:
-    # keep loop running at the right speed
-    clock.tick(FPS)
-    was_shooting = False
-
-    game_state.update_game_state(mobs, player, bullets, frame_count)
-
-    action = ai_agent.next_move(game_state.dump_state())
-
-    game_state.save_action(action)
-
-    # Process input (events)
-    for event in pygame.event.get():
-        # check for closing window
-        if event.type == pygame.QUIT:
-            running = False
-
-    if action == 2 or action == 4 or action == 5:
-        player.shoot()
-        was_shooting = True
-    else:
-        player.update_with_action(action)
-
-    # Update
-    all_sprites.update()
-
-    # check to see if a bullet hit a mob
-    hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
-    for hit in hits:
+    all_sprites = pygame.sprite.Group()
+    mobs = pygame.sprite.Group()
+    bullets = pygame.sprite.Group()
+    player = Player()
+    all_sprites.add(player)
+    for i in range(MOBS_SIZE):
         m = Mob()
         all_sprites.add(m)
         mobs.add(m)
-        score += 1
 
-    # check to see if a mob hit the player
-    hits = pygame.sprite.spritecollide(player, mobs, False)
-    if hits:
-        running = False
+    game_start_time = time.time()
+    game_state = game.GameState()
+    score = 0
 
-    # game_state.update_game(mobs, player, bullets, action, score)
-    # print(','.join(map(str, game_state.dump_state())))
+    # Game loop
+    running = True
+    while running:
 
-    # Draw / render
-    screen.fill(BLACK)
-    screen.blit(background, background_rect)
-    all_sprites.draw(screen)
-    # *after* drawing everything, flip the display
-    pygame.display.flip()
-    frame_count = frame_count + 1
+        # level of randomness depending on number of games played
+        ai.epsilon = 200 - games_played
 
+        # keep loop running at the right speed
+        clock.tick(FPS)
+        was_shooting = False
+        old_score = score
 
-end = time.time()
+        # get state before action
+        state_old = game_state.dump_state()
 
-print("time: {} sec, score: {}".format(round(end - game_start_time), score))
-pygame.quit()
+        # predict action
+        final_move = reinf.RLAgent.to_categorical(random.randint(0, 5))
+        if random.randint(0, 200) > ai.epsilon:
+            # predict action based on the old state
+            prediction = ai.model.predict(state_old.reshape((1, state_vector_size)))
+            final_move = reinf.RLAgent.to_categorical(np.argmax(prediction[0]))
+
+        # save action
+        # game_state.save_action(action)
+
+        action = reinf.RLAgent.from_categorical(final_move)
+        game_state.save_action(action)
+
+        # Process input (events)
+        for event in pygame.event.get():
+            # check for closing window
+            if event.type == pygame.QUIT:
+                running = False
+
+        if action == 2 or action == 4 or action == 5:
+            player.shoot()
+            was_shooting = True
+        else:
+            player.update_with_action(action)
+
+        # Update
+        all_sprites.update()
+
+        # check to see if a bullet hit a mob
+        hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
+        for hit in hits:
+            m = Mob()
+            all_sprites.add(m)
+            mobs.add(m)
+            score += 1
+
+        # check to see if a mob hit the player
+        hits = pygame.sprite.spritecollide(player, mobs, False)
+        if hits:
+            running = False
+
+        # get reward
+        reward = ai.set_reward(score - old_score, running)
+
+        game_state.update_game_state(mobs, player, bullets)
+        state_new = game_state.dump_state()
+
+        # train short memory base on the new action and state
+        ai.train_short_memory(state_old, final_move, reward, state_new, running)
+
+        # store the new data into a long term memory
+        ai.remember(state_old, final_move, reward, state_new, running)
+
+        # Draw / render
+        screen.fill(BLACK)
+        screen.blit(background, background_rect)
+        all_sprites.draw(screen)
+
+        # *after* drawing everything, flip the display
+        pygame.display.flip()
+
+    end = time.time()
+    print("games_played: {}, time: {} sec, score: {}".format(games_played, round(end - game_start_time), score))
+    pygame.quit()
+    games_played = games_played + 1
+    ai.replay_new(ai.memory)
+    # end large loop
+
+ai.model.save_weights('weights.hdf5')
+# save weights
+#end training
